@@ -1,0 +1,95 @@
+name: Electron build
+
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  build_on_mac:
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@master
+        with:
+          ref: production
+      - uses: actions/setup-node@master
+        with:
+          node-version: 13.5.0
+      - name: Force Xcode 11
+        run: sudo xcode-select -switch /Applications/Xcode_11.3.app
+      - name: create temporary keychain
+        run: security create-keychain -p ${{ secrets.FORGE_PACKAGER_SIGNING_TEMP_KEYCHAIN_PASSWORD }} ${{ secrets.FORGE_PACKAGER_SIGNING_TEMP_KEYCHAIN_NAME }}
+      - name: add keychain to search list
+        run: security list-keychains -s ${{ secrets.FORGE_PACKAGER_SIGNING_TEMP_KEYCHAIN_NAME }}
+      - name: unlock temporary keychain
+        run: security unlock-keychain -p ${{ secrets.FORGE_PACKAGER_SIGNING_TEMP_KEYCHAIN_PASSWORD }} ${{ secrets.FORGE_PACKAGER_SIGNING_TEMP_KEYCHAIN_NAME }}
+      - name: add key to single keychain
+        run: security import ./build/glitter-electron-osx-sign-cert.p12 -P ${{ secrets.FORGE_PACKAGER_SIGNING_CERTIFICATE_PASSWORD }} -k ${{ secrets.FORGE_PACKAGER_SIGNING_TEMP_KEYCHAIN_NAME }} -T /usr/bin/codesign -T /usr/bin/security
+      - name: electron mac os security identities
+        run: security find-identity -v ${{ secrets.FORGE_PACKAGER_SIGNING_TEMP_KEYCHAIN_NAME }}
+      - name: add codesign support
+        run: 'security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k ${{ secrets.FORGE_PACKAGER_SIGNING_TEMP_KEYCHAIN_PASSWORD }} ${{ secrets.FORGE_PACKAGER_SIGNING_TEMP_KEYCHAIN_NAME }}'
+      - name: Install npm dependencies
+        run: npm install
+      - name: Install parcel bundler
+        run: |
+          cd ./parcel-bundler
+          npm install
+      - name: Build on MacOS and publish to GitHub releases
+        env:
+          FORGE_PACKAGER_APPLE_ID: ${{ secrets.FORGE_PACKAGER_APPLE_ID }}
+          FORGE_PACKAGER_APPLE_ID_PASSWORD: ${{ secrets.FORGE_PACKAGER_APPLE_ID_PASSWORD }}
+          FORGE_PACKAGER_SIGNING_IDENTITY: ${{ secrets.FORGE_PACKAGER_SIGNING_IDENTITY }}
+          FORGE_PACKAGER_SIGNING_TEMP_KEYCHAIN_NAME: ${{ secrets.FORGE_PACKAGER_SIGNING_TEMP_KEYCHAIN_NAME }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run publish
+  build_on_win:
+    runs-on: windows-2016
+    steps:
+      - uses: actions/checkout@master
+        with:
+          ref: production
+      - uses: actions/setup-node@master
+        with:
+          node-version: 13.5.0
+      - name: install node tools
+        run: npm install --global --production windows-build-tools@4.0.0
+      - name: install node-gyp
+        run: npm install --global node-gyp@latest
+      - name: Set node config to use python2.7
+        run: npm config set python python2.7
+      - name: Set node config to set msvs_version to 2015
+        run: npm config set msvs_version 2015
+      - name: Install npm dependencies
+        run: npm install
+      - name: Install parcel bundler
+        run: |
+          cd ./parcel-bundler
+          npm install
+      - name: Build on Windows and publish to GitHub releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run publish
+  build_on_ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+        with:
+          ref: production
+      - uses: actions/setup-node@master
+        with:
+          node-version: 13.5.0
+      - name: Install ubuntu dependencies
+        run: |
+          sudo apt update
+          sudo apt install gcc make fakeroot dpkg rpm
+      - name: Install npm dependencies
+        run: npm install
+      - name: Install parcel bundler
+        run: |
+          cd ./parcel-bundler
+          npm install
+      - name: Build on Ubuntu and publish to GitHub releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run publish

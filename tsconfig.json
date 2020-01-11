@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "jsx": "react",
+    "paths": {
+      "@assets*": ["./assets*"],
+      "@main*": ["./src/main*"],
+      "@ui*": ["./src/ui*"],
+      "@appStore*": ["./src/appStore*"],
+      "@widgetCreator*": ["./src/widgetCreator*"],
+      "@widgetLoader*": ["./src/widgetLoader*"],
+      "@widgetInstantiator*": ["./src/widgetInstantiator*"],
+      "react-dom": ["node_modules/@hot-loader/react-dom"]
+    },
+    "typeRoots": ["./node_modules/@types", "./librariesTypings"],
+    "noImplicitReturns": true
+  },
+  "exclude": ["node_modules", "webpack", "out", "librariesTypings"]
+}
