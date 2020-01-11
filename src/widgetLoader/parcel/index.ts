@@ -1,4 +1,5 @@
 import { app, ipcRenderer } from 'electron';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const nativeRequire = require('../../main/node/nativeRequire');
 const Bundler = nativeRequire('parcel-bundler');
 
@@ -14,6 +15,7 @@ ipcRenderer.on(
     }
 
     const bundler = new Bundler(bundlerEntry, bundlerConfig);
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     let stopAccessingSecurityScopedResource: Function = () => {};
 
     if (widget.securityScopedBookmark) {

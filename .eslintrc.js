@@ -20,9 +20,9 @@ module.exports = {
     'prettier/react',
   ],
   rules: {
-    indent: ['error', 2, { SwitchCase: 1 }],
+    indent: 'off',
     'linebreak-style': 0,
-    quotes: ['error', 'single'],
+    quotes: 'off',
     semi: ['error', 'always'],
     'no-console': 'off',
     'import/no-extraneous-dependencies': 'off',
@@ -46,7 +46,8 @@ module.exports = {
     'import/prefer-default-export': ['off'],
     'no-underscore-dangle': 'off',
     'prettier/prettier': 'error',
-    'max-len': ['error', 80],
+    // We disable max length, makes no sense when using prettier
+    'max-len': 'off',
   },
   plugins: ['html', 'import', 'react', 'react-hooks', 'prettier'],
   settings: {

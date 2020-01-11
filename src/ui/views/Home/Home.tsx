@@ -26,7 +26,7 @@ const Home: React.FC = observer(() => {
           <CardContent>
             {store.developmentWidgets.value.length === 0 && (
               <Typography variant="h5">
-                You don't have any widgets yet
+                You don&apos;t have any widgets yet
               </Typography>
             )}
 
@@ -36,9 +36,8 @@ const Home: React.FC = observer(() => {
                   You have{' '}
                   <Styled.HomeStatsNumber
                     variant="h5"
-                    // @ts-ignore: No overload matches this call.
-                    component="span"
                     color="primary"
+                    variantMapping={{ h5: 'span' }}
                   >
                     {store.developmentWidgets.value.length}
                   </Styled.HomeStatsNumber>{' '}

@@ -1,4 +1,5 @@
 import { ipcRenderer } from 'electron';
+import { CreateDevelopmentWidgetReturnInterface } from '@widgetCreator/api';
 
 export const showCreateDevelopmentWidgetFsDialog = async () => {
   return await ipcRenderer.invoke(
@@ -24,7 +25,7 @@ export const createDevelopmentWidget = async ({
   active: boolean;
   width: number;
   height: number;
-}) => {
+}): Promise<CreateDevelopmentWidgetReturnInterface> => {
   return await ipcRenderer.invoke('api/widgetCreator/createDevelopmentWidget', {
     path,
     title,

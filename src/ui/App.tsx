@@ -12,12 +12,12 @@ import { StoreProvider } from '@ui/store/hooks';
 import { Store as NotificationStore } from '@ui/notifications/store';
 import { StoreProvider as NotificationStoreProvider } from '@ui/notifications/hooks';
 
-interface IProps {
+interface PropsInterface {
   store: typeof Store.Type;
   notificationsStore: typeof NotificationStore.Type;
 }
 
-const App: React.FC<IProps> = observer(({ store }) => {
+const App: React.FC<PropsInterface> = observer(({ store }) => {
   return (
     <StylesProvider injectFirst>
       <ThemeProvider theme={theme}>

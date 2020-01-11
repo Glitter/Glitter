@@ -27,15 +27,16 @@ import {
 } from '@ui/api/widgetCreator';
 import { Notification } from '@ui/notifications/store';
 import { useStore as useNotificationsStore } from '@ui/notifications/hooks';
+import omit from '@utils/omit';
 import * as Styled from './Developers.css';
 
 const Developers: React.FC = observer(() => {
   const [addWidgetDialogOpen, setAddWidgetDialogOpen] = useState(false);
 
-  const openAddWidgetDialog = () => {
+  const openAddWidgetDialog = (): void => {
     setAddWidgetDialogOpen(true);
   };
-  const closeAddWidgetDialog = () => {
+  const closeAddWidgetDialog = (): void => {
     setAddWidgetDialogOpen(false);
   };
 
@@ -44,7 +45,7 @@ const Developers: React.FC = observer(() => {
 
   // Widget configuration
   const [widgetType, setWidgetType] = useState('');
-  const [widgetConfiguration, setWidgetConfiguration] = useState<any>({});
+  const [widgetConfiguration, setWidgetConfiguration] = useState<any>({}); // eslint-disable-line @typescript-eslint/no-explicit-any
   const widgetConfigurationFields = [
     {
       name: 'title',
@@ -80,7 +81,7 @@ const Developers: React.FC = observer(() => {
       inputType: 'number' as 'number',
     },
   ];
-  const [validation, setValidation] = useState<any>({});
+  const [validation, setValidation] = useState<{ [key: string]: string }>({});
   const validateField = (name: string): boolean => {
     switch (name) {
       case 'title':
@@ -89,7 +90,7 @@ const Developers: React.FC = observer(() => {
           (typeof widgetConfiguration.title === 'string' &&
             widgetConfiguration.title.trim().length === 0)
         ) {
-          setValidation((currentValidation: any) => ({
+          setValidation(currentValidation => ({
             ...currentValidation,
             [name]: 'Your widget needs a title',
           }));
@@ -102,7 +103,7 @@ const Developers: React.FC = observer(() => {
           widgetConfiguration.width === undefined ||
           widgetConfiguration.width === ''
         ) {
-          setValidation((currentValidation: any) => ({
+          setValidation(currentValidation => ({
             ...currentValidation,
             [name]: 'Your widget needs a width',
           }));
@@ -113,7 +114,7 @@ const Developers: React.FC = observer(() => {
           const parsedWidth = parseInt(widgetConfiguration.width, 10);
 
           if (parsedWidth <= 0) {
-            setValidation((currentValidation: any) => ({
+            setValidation(currentValidation => ({
               ...currentValidation,
               [name]:
                 'It will be hard to see this widget, please increase width to at least 1',
@@ -121,7 +122,7 @@ const Developers: React.FC = observer(() => {
             return false;
           }
         } catch (error) {
-          setValidation((currentValidation: any) => ({
+          setValidation(currentValidation => ({
             ...currentValidation,
             [name]: 'Width should ideally be a number :)',
           }));
@@ -133,7 +134,7 @@ const Developers: React.FC = observer(() => {
           widgetConfiguration.height === undefined ||
           widgetConfiguration.height === ''
         ) {
-          setValidation((currentValidation: any) => ({
+          setValidation(currentValidation => ({
             ...currentValidation,
             [name]: 'Your widget needs a height',
           }));
@@ -144,7 +145,7 @@ const Developers: React.FC = observer(() => {
           const parsedHeight = parseInt(widgetConfiguration.height, 10);
 
           if (parsedHeight <= 0) {
-            setValidation((currentValidation: any) => ({
+            setValidation(currentValidation => ({
               ...currentValidation,
               [name]:
                 'It will be hard to see this widget, please increase height to at least 1',
@@ -152,7 +153,7 @@ const Developers: React.FC = observer(() => {
             return false;
           }
         } catch (error) {
-          setValidation((currentValidation: any) => ({
+          setValidation(currentValidation => ({
             ...currentValidation,
             [name]: 'Height should ideally be a number :)',
           }));
@@ -165,7 +166,7 @@ const Developers: React.FC = observer(() => {
 
     return true;
   };
-  const validateConfiguration = () => {
+  const validateConfiguration = (): boolean => {
     let configurationIsValid = true;
 
     widgetConfigurationFields.forEach(widgetConfigurationField => {
@@ -178,18 +179,16 @@ const Developers: React.FC = observer(() => {
 
     return configurationIsValid;
   };
-  const clearValidation = (name: string) => {
+  const clearValidation = (name: string): void => {
     if (typeof validation[name] === undefined) {
       return;
     }
 
-    const { [name]: _validationToClear, ...otherValidation } = validation;
-
-    setValidation(otherValidation);
+    setValidation(omit(validation, name));
   };
 
   // Creating widgets
-  const showSelectDevelopmentWidgetFsDialog = () => {
+  const showSelectDevelopmentWidgetFsDialog = (): void => {
     apiShowSelectDevelopmentWidgetFsDialog().then(
       ({
         filePaths,
@@ -211,7 +210,7 @@ const Developers: React.FC = observer(() => {
                   ? bookmarks[i]
                   : undefined,
             }),
-          ),
+          ), // eslint-disable-line function-paren-newline
         )
           .then(widgetsLoaded => {
             const successes = widgetsLoaded.filter(
@@ -250,7 +249,7 @@ const Developers: React.FC = observer(() => {
     );
   };
 
-  const showCreateDevelopmentWidgetFsDialog = () => {
+  const showCreateDevelopmentWidgetFsDialog = (): void => {
     apiShowCreateDevelopmentWidgetFsDialog().then(
       ({
         filePaths,
@@ -264,7 +263,7 @@ const Developers: React.FC = observer(() => {
         }
 
         Promise.all(
-          filePaths.map((filePath, i) =>
+          filePaths.map(filePath =>
             apiCreateDevelopmentWidget({
               title: widgetConfiguration.title,
               subtitle: widgetConfiguration.subtitle,
@@ -275,7 +274,7 @@ const Developers: React.FC = observer(() => {
               width: parseInt(widgetConfiguration.width, 10),
               height: parseInt(widgetConfiguration.height, 10),
             }),
-          ),
+          ), // eslint-disable-line function-paren-newline
         )
           .then(widgetsCreated => {
             const successes = widgetsCreated.filter(
@@ -288,7 +287,7 @@ const Developers: React.FC = observer(() => {
             failures.forEach(({ message }) => {
               notificationsStore.addNotification(
                 Notification.create({
-                  text: message,
+                  text: message as string,
                   type: 'error',
                 }),
               );
@@ -298,13 +297,13 @@ const Developers: React.FC = observer(() => {
               return Promise.all(
                 successes.map((success, i) =>
                   apiLoadDevelopmentWidget({
-                    path: success.path,
+                    path: success.path as string,
                     securityScopedBookmark:
                       bookmarks !== undefined && bookmarks.length > 0
                         ? bookmarks[i]
                         : undefined,
                   }),
-                ),
+                ), // eslint-disable-line function-paren-newline
               );
             }
 
@@ -346,7 +345,7 @@ const Developers: React.FC = observer(() => {
       },
     );
   };
-  const createWidget = () => {
+  const createWidget = (): void => {
     const configurationIsValid = validateConfiguration();
 
     if (configurationIsValid === false) {
@@ -357,7 +356,7 @@ const Developers: React.FC = observer(() => {
     showCreateDevelopmentWidgetFsDialog();
   };
 
-  const getWidgetLogs = (id: string) => {
+  const getWidgetLogs = (id: string): string[] => {
     return store.developmentWidgetsLogs.get(id) || [];
   };
 
@@ -379,7 +378,7 @@ const Developers: React.FC = observer(() => {
 
         <Dialog
           open={addWidgetDialogOpen}
-          onExited={() => {
+          onExited={(): void => {
             setWidgetType('');
             setWidgetConfiguration({});
             setValidation({});
@@ -399,7 +398,7 @@ const Developers: React.FC = observer(() => {
               <List>
                 <ListItem
                   button
-                  onClick={() => {
+                  onClick={(): void => {
                     setWidgetType('vue');
                   }}
                 >
@@ -415,7 +414,7 @@ const Developers: React.FC = observer(() => {
                 </ListItem>
                 <ListItem
                   button
-                  onClick={() => {
+                  onClick={(): void => {
                     setWidgetType('react');
                   }}
                 >
@@ -456,11 +455,11 @@ const Developers: React.FC = observer(() => {
                   onChange={({
                     state: newWidgetConfiguration,
                     name: fieldName,
-                  }) => {
+                  }): void => {
                     setWidgetConfiguration(newWidgetConfiguration);
                     clearValidation(fieldName);
                   }}
-                  onShouldValidate={fieldName => {
+                  onShouldValidate={(fieldName): void => {
                     validateField(fieldName);
                   }}
                 />
@@ -495,7 +494,7 @@ const Developers: React.FC = observer(() => {
       </Typography>
       {store.developmentWidgets.value.length === 0 && (
         <Typography variant="body1" gutterBottom>
-          No widgets in development right now. Luckily, it's simple to get
+          No widgets in development right now. Luckily, it&apos;s simple to get
           started by clicking the button above
         </Typography>
       )}

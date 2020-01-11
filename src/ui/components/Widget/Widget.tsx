@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { observer } from 'mobx-react-lite';
 import Typography from '@material-ui/core/Typography';
 import CardContent from '@material-ui/core/CardContent';
@@ -7,25 +8,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import * as Styled from './Widget.css';
 
-interface IProps {
+interface WidgetInterface {
   title: string;
   subtitle?: string;
-  type: 'vue' | 'react';
+  type: string;
   description?: string;
-  id: string;
-  actions?: any;
+  actions?: JSX.Element;
   cardProps?: {
     elevation?: number;
   };
 }
 
-const Widget: React.FC<IProps> = observer(
+const Widget: React.FC<WidgetInterface> = observer(
   ({ title, subtitle, type, description, actions, cardProps = {} }) => {
     const recognizedTypes = ['vue', 'react'];
-    const iconsMap = {
-      vue: 'vuejs',
-      react: 'react',
-    };
+    const icon = type === 'vue' ? 'vuejs' : 'react';
 
     return (
       <Styled.Widget>
@@ -34,7 +31,7 @@ const Widget: React.FC<IProps> = observer(
             avatar={
               recognizedTypes.includes(type) && (
                 <Styled.WidgetIcon type={type}>
-                  <FontAwesomeIcon icon={['fab', iconsMap[type]] as IconProp} />
+                  <FontAwesomeIcon icon={['fab', icon] as IconProp} />
                 </Styled.WidgetIcon>
               )
             }
@@ -57,5 +54,16 @@ const Widget: React.FC<IProps> = observer(
     );
   },
 );
+
+Widget.propTypes = {
+  title: PropTypes.string.isRequired,
+  subtitle: PropTypes.string,
+  type: PropTypes.string.isRequired,
+  description: PropTypes.string,
+  actions: PropTypes.element,
+  cardProps: PropTypes.shape({
+    elevation: PropTypes.number,
+  }),
+};
 
 export default Widget;

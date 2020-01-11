@@ -5,7 +5,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { getSpacing } from '@ui/css/utilities/spacing';
 import theme from '@ui/css/theme';
 
-interface IAppMenuItemButton {
+interface AppMenuItemButtonInterface {
   active: boolean;
 }
 
@@ -35,7 +35,8 @@ export const AppMenuItem = styled.li`
 `;
 
 export const AppMenuItemButton = styled(
-  React.forwardRef(({ active, ...rest }: IAppMenuItemButton, ref) => (
+  // eslint-disable-next-line react/display-name, @typescript-eslint/no-unused-vars
+  React.forwardRef(({ active, ...rest }: AppMenuItemButtonInterface) => (
     <IconButton {...rest} />
   )),
 )`
@@ -44,10 +45,11 @@ export const AppMenuItemButton = styled(
   border: 2px solid hsl(0, 0%, 15%);
   width: ${rem(52)};
 
-  ${props =>
+  ${// eslint-disable @typescript-eslint/explicit-function-return-type
+  props =>
     props.active &&
     css`
       border-color: ${theme.palette.primary.light};
       color: ${theme.palette.primary.light};
     `}
-` as any;
+` as any; // eslint-disable-line @typescript-eslint/no-explicit-any

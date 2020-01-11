@@ -21,7 +21,6 @@ import {
   setDevelopmentWidgetInstancePosition as apiSetDevelopmentWidgetInstancePosition,
 } from '@ui/api/widgetInstantiator';
 import { useStore } from '@ui/store/hooks';
-import { DevelopmentWidgetInstance } from '@ui/store';
 import * as StyledAppPaper from '@ui/components/AppPaper/AppPaper.css';
 import * as Styled from './Widgets.css';
 
@@ -33,7 +32,7 @@ const Widgets: React.FC = observer(() => {
   const [selectedDisplay, setSelectedDisplay] = useState(
     displays.length > 0 ? displays[0] : undefined,
   );
-  const updateDisplays = () => {
+  const updateDisplays = (): void => {
     const newDisplays = remote.screen.getAllDisplays();
 
     setDisplays(newDisplays);
@@ -51,7 +50,7 @@ const Widgets: React.FC = observer(() => {
     ipcRenderer.on('api/screen/displayAdded', updateDisplays);
     ipcRenderer.on('api/screen/displayRemoved', updateDisplays);
 
-    return () => {
+    return (): void => {
       ipcRenderer.off('api/screen/displayAdded', updateDisplays);
       ipcRenderer.off('api/screen/displayRemoved', updateDisplays);
     };
@@ -107,10 +106,10 @@ const Widgets: React.FC = observer(() => {
     setAddWidgetInstanceDialogOpen,
   ] = useState(false);
 
-  const openAddWidgetInstanceDialog = () => {
+  const openAddWidgetInstanceDialog = (): void => {
     setAddWidgetInstanceDialogOpen(true);
   };
-  const closeAddWidgetInstanceDialog = () => {
+  const closeAddWidgetInstanceDialog = (): void => {
     setAddWidgetInstanceDialogOpen(false);
   };
 
@@ -121,7 +120,7 @@ const Widgets: React.FC = observer(() => {
   }: {
     widgetId: string;
     displayId: number;
-  }) => {
+  }): Promise<void> => {
     closeAddWidgetInstanceDialog();
     await apiAddDevelopmentWidgetInstance({ widgetId, displayId });
     await store.listDevelopmentWidgetsInstances({ silent: true });
@@ -147,7 +146,7 @@ const Widgets: React.FC = observer(() => {
       width: number;
       height: number;
     };
-  }) => {
+  }): { x: number; y: number } => {
     const realScreenX =
       position.left !== undefined
         ? position.left
@@ -188,7 +187,7 @@ const Widgets: React.FC = observer(() => {
       width: number;
       height: number;
     };
-  }) => {
+  }): { width: number; height: number } => {
     return {
       width: Math.round(
         (renderedScreenSize.width / screenSize.width) * widgetSize.width,
@@ -197,6 +196,33 @@ const Widgets: React.FC = observer(() => {
         (renderedScreenSize.height / screenSize.height) * widgetSize.height,
       ),
     };
+  };
+
+  // Manage widget instance dialog
+  const [
+    manageWidgetInstanceDialogOpen,
+    setManageWidgetInstanceDialogOpen,
+  ] = useState(false);
+  const [selectedWidgetInstanceId, setSelectedWidgetInstanceId] = useState<
+    string | undefined
+  >(undefined);
+
+  const openManageWidgetInstanceDialog = (): void => {
+    setManageWidgetInstanceDialogOpen(true);
+  };
+  const closeManageWidgetInstanceDialog = (): void => {
+    setManageWidgetInstanceDialogOpen(false);
+  };
+
+  const [
+    deleteWidgetInstanceDialogOpen,
+    setDeleteWidgetInstanceDialogOpen,
+  ] = useState(false);
+  const openDeleteWidgetInstanceDialog = (): void => {
+    setDeleteWidgetInstanceDialogOpen(true);
+  };
+  const closeDeleteWidgetInstanceDialog = (): void => {
+    setDeleteWidgetInstanceDialogOpen(false);
   };
 
   // Updating widget instances position
@@ -224,7 +250,7 @@ const Widgets: React.FC = observer(() => {
       width: number;
       height: number;
     };
-  }) => {
+  }): void => {
     const scaleFactor = renderedScreenSize.width / screenSize.width;
     const realScreenPosition = {
       x: Math.round(renderedScreenPosition.x / scaleFactor),
@@ -311,33 +337,6 @@ const Widgets: React.FC = observer(() => {
     setPreventWidgetsInstancesTooltipsOpen,
   ] = useState(false);
 
-  // Manage widget instance dialog
-  const [
-    manageWidgetInstanceDialogOpen,
-    setManageWidgetInstanceDialogOpen,
-  ] = useState(false);
-  const [selectedWidgetInstanceId, setSelectedWidgetInstanceId] = useState<
-    string | undefined
-  >(undefined);
-
-  const openManageWidgetInstanceDialog = () => {
-    setManageWidgetInstanceDialogOpen(true);
-  };
-  const closeManageWidgetInstanceDialog = () => {
-    setManageWidgetInstanceDialogOpen(false);
-  };
-
-  const [
-    deleteWidgetInstanceDialogOpen,
-    setDeleteWidgetInstanceDialogOpen,
-  ] = useState(false);
-  const openDeleteWidgetInstanceDialog = () => {
-    setDeleteWidgetInstanceDialogOpen(true);
-  };
-  const closeDeleteWidgetInstanceDialog = () => {
-    setDeleteWidgetInstanceDialogOpen(false);
-  };
-
   // Empty screen
   const [emptyScreenKawaiiMood, setEmptyScreenKawaiiMood] = useState('happy');
 
@@ -389,7 +388,7 @@ const Widgets: React.FC = observer(() => {
                 <Draggable
                   key={widgetInstance.id}
                   bounds="parent"
-                  onStart={() => {
+                  onStart={(): void => {
                     setPreventWidgetsInstancesTooltipsOpen(true);
                     setWidgetsInstancesTooltipsOpen(
                       new Map(
@@ -400,7 +399,7 @@ const Widgets: React.FC = observer(() => {
                       ),
                     );
                   }}
-                  onStop={(_e: DraggableEvent, data: DraggableData) => {
+                  onStop={(_e: DraggableEvent, data: DraggableData): void => {
                     setPreventWidgetsInstancesTooltipsOpen(false);
                     updateWidgetInstancePosition({
                       widgetInstanceId: widgetInstance.id,
@@ -441,7 +440,7 @@ const Widgets: React.FC = observer(() => {
                         widgetsInstancesTooltipsOpen.get(widgetInstance.id) ||
                         false
                       }
-                      onClose={() => {
+                      onClose={(): void => {
                         setWidgetsInstancesTooltipsOpen(
                           new Map(
                             widgetsInstancesTooltipsOpen.set(
@@ -451,7 +450,7 @@ const Widgets: React.FC = observer(() => {
                           ),
                         );
                       }}
-                      onOpen={() => {
+                      onOpen={(): void => {
                         if (preventWidgetsInstancesTooltipsOpen === true) {
                           return;
                         }
@@ -520,15 +519,15 @@ const Widgets: React.FC = observer(() => {
           Are you sure you want to remove this widget instance?
         </DialogTitle>
         <DialogContent>
-          Don't worry, removing it does not remove the widget completely, only
-          this specific instance of it.
+          Don&apos;t worry, removing it does not remove the widget completely,
+          only this specific instance of it.
         </DialogContent>
         <DialogActions>
           <Button
             variant="outlined"
             color="default"
             size="small"
-            onClick={async () => {
+            onClick={async (): Promise<void> => {
               setSelectedWidgetInstanceId(undefined);
               closeDeleteWidgetInstanceDialog();
               closeManageWidgetInstanceDialog();
@@ -544,7 +543,7 @@ const Widgets: React.FC = observer(() => {
             variant="outlined"
             color="default"
             size="small"
-            onClick={() => {
+            onClick={(): void => {
               closeDeleteWidgetInstanceDialog();
             }}
           >
@@ -557,7 +556,7 @@ const Widgets: React.FC = observer(() => {
         {displays.length > 1 && (
           <Select
             value={selectedDisplay?.id}
-            onChange={event => {
+            onChange={(event): void => {
               setSelectedDisplay(
                 displays.find(display => display.id === event.target.value),
               );
@@ -574,10 +573,10 @@ const Widgets: React.FC = observer(() => {
           color="primary"
           variant="contained"
           onClick={openAddWidgetInstanceDialog}
-          onMouseEnter={() => {
+          onMouseEnter={(): void => {
             setEmptyScreenKawaiiMood('excited');
           }}
-          onMouseLeave={() => {
+          onMouseLeave={(): void => {
             setEmptyScreenKawaiiMood('happy');
           }}
         >
@@ -611,7 +610,9 @@ const Widgets: React.FC = observer(() => {
                 color={theme.palette.secondary.main}
               />
               <div>
-                <Typography variant="h6">You don't have any widgets</Typography>
+                <Typography variant="h6">
+                  You don&apos;t have any widgets
+                </Typography>
                 <Typography variant="body1">
                   Do not despair, you can start the developement of a new widget
                   in the development area.
@@ -621,13 +622,13 @@ const Widgets: React.FC = observer(() => {
                 color="secondary"
                 variant="outlined"
                 size="small"
-                onClick={() => {
+                onClick={(): void => {
                   store.showDevelopers();
                 }}
-                onMouseEnter={() => {
+                onMouseEnter={(): void => {
                   setEmptyWidgetsKawaiiMood('excited');
                 }}
-                onMouseLeave={() => {
+                onMouseLeave={(): void => {
                   setEmptyWidgetsKawaiiMood('sad');
                 }}
               >
@@ -644,16 +645,15 @@ const Widgets: React.FC = observer(() => {
                 subtitle={developmentWidget.config.subtitle}
                 type={developmentWidget.config.type}
                 description={developmentWidget.config.description}
-                id={developmentWidget.id}
                 actions={
                   <Button
                     color="default"
                     variant="outlined"
                     size="small"
-                    onClick={() => {
+                    onClick={(): void => {
                       createDevelopmentWidgetInstance({
                         widgetId: developmentWidget.id,
-                        displayId: selectedDisplay!.id,
+                        displayId: selectedDisplay?.id || 0,
                       });
                     }}
                   >

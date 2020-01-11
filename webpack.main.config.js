@@ -30,6 +30,7 @@ module.exports = {
         __dirname,
         './src/widgetInstantiator',
       ),
+      '@utils': path.resolve(__dirname, './src/utils'),
     },
     extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
   },

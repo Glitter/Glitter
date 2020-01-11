@@ -1,10 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import * as Styled from './DynamicFieldText.css';
 
-export interface IDynamicFieldTextInput {
+export interface DynamicFieldTextInterface {
   name: string;
-  type: 'text';
+  type: string;
   value?: string;
   label: string;
   description?: string;
@@ -24,7 +25,7 @@ export interface IDynamicFieldTextInput {
   onShouldValidate?: (name: string) => void;
 }
 
-const DynamicFieldText: React.FC<IDynamicFieldTextInput> = ({
+const DynamicFieldText: React.FC<DynamicFieldTextInterface> = ({
   name,
   label,
   description,
@@ -50,13 +51,35 @@ const DynamicFieldText: React.FC<IDynamicFieldTextInput> = ({
         size="small"
         fullWidth
         inputProps={{
-          onBlur: () => {
+          onBlur: (): void => {
             onShouldValidate && onShouldValidate(name);
           },
         }}
       />
     </Styled.DynamicField>
   );
+};
+
+DynamicFieldText.propTypes = {
+  name: PropTypes.string.isRequired,
+  value: PropTypes.string,
+  label: PropTypes.string.isRequired,
+  description: PropTypes.string,
+  error: PropTypes.string,
+  onChange: PropTypes.func,
+  multiline: PropTypes.bool,
+  inputType: PropTypes.oneOf([
+    'text',
+    'number',
+    'email',
+    'tel',
+    'color',
+    'date',
+    'password',
+    'time',
+    'url',
+  ]),
+  onShouldValidate: PropTypes.func,
 };
 
 export default DynamicFieldText;
