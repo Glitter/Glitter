@@ -1,6 +1,7 @@
 import { ipcRenderer } from 'electron';
+import { DevelopmentWidgetsInstancesValue } from '@ui/store';
 
-export const listDevelopmentWidgetsInstances = async () => {
+export const listDevelopmentWidgetsInstances = async (): Promise<typeof DevelopmentWidgetsInstancesValue.Type> => {
   return await ipcRenderer.invoke(
     'api/widgetInstantiator/listDevelopmentWidgetsInstances',
   );
@@ -12,7 +13,7 @@ export const addDevelopmentWidgetInstance = async ({
 }: {
   widgetId: string;
   displayId: number;
-}) => {
+}): Promise<{ success: boolean; message?: string }> => {
   return await ipcRenderer.invoke(
     'api/widgetInstantiator/addDevelopmentWidgetInstance',
     {
@@ -22,7 +23,9 @@ export const addDevelopmentWidgetInstance = async ({
   );
 };
 
-export const removeDevelopmentWidgetInstance = async (id: string) => {
+export const removeDevelopmentWidgetInstance = async (
+  id: string,
+): Promise<{ success: boolean; message?: string }> => {
   return await ipcRenderer.invoke(
     'api/widgetInstantiator/removeDevelopmentWidgetInstance',
     id,
@@ -40,7 +43,7 @@ export const setDevelopmentWidgetInstancePosition = async ({
     bottom?: number;
     left?: number;
   };
-}) => {
+}): Promise<{ success: boolean; message?: string }> => {
   return await ipcRenderer.invoke(
     'api/widgetInstantiator/setDevelopmentWidgetInstancePosition',
     {

@@ -45,6 +45,7 @@ module.exports = {
       '@main': path.resolve(__dirname, './src/main'),
       '@ui': path.resolve(__dirname, './src/ui'),
       '@appStore': path.resolve(__dirname, './src/appStore'),
+      '@utils': path.resolve(__dirname, './src/utils'),
       plugins: path.resolve(__dirname, './plugins'),
       'react-dom': '@hot-loader/react-dom',
     },

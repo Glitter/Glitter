@@ -1,6 +1,10 @@
 import { ipcRenderer } from 'electron';
+import { CreateDevelopmentWidgetReturnInterface } from '@widgetCreator/api';
 
-export const showCreateDevelopmentWidgetFsDialog = async () => {
+export const showCreateDevelopmentWidgetFsDialog = async (): Promise<{
+  filePaths: string[];
+  bookmarks?: string[];
+}> => {
   return await ipcRenderer.invoke(
     'api/widgetCreator/showCreateDevelopmentWidgetFsDialog',
   );
@@ -24,7 +28,7 @@ export const createDevelopmentWidget = async ({
   active: boolean;
   width: number;
   height: number;
-}) => {
+}): Promise<CreateDevelopmentWidgetReturnInterface> => {
   return await ipcRenderer.invoke('api/widgetCreator/createDevelopmentWidget', {
     path,
     title,

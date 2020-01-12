@@ -6,19 +6,19 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { Store } from '@ui/store';
 import * as Styled from './AppMenu.css';
 
-interface IMenuItem {
+interface MenuItemInterface {
   label: string;
   view: string;
   icon: string;
   onClick: ({ store }: { store: typeof Store.Type }) => void;
 }
 
-const MENU_ITEMS_TOP: IMenuItem[] = [
+const MENU_ITEMS_TOP: MenuItemInterface[] = [
   {
     label: 'Dashboard',
     view: 'home',
     icon: 'shield-alt',
-    onClick({ store }) {
+    onClick({ store }): void {
       store.showHome();
     },
   },
@@ -26,27 +26,27 @@ const MENU_ITEMS_TOP: IMenuItem[] = [
     label: 'Manage widgets',
     view: 'widgets',
     icon: 'window-restore',
-    onClick({ store }) {
+    onClick({ store }): void {
       store.showWidgets();
     },
   },
 ];
-const MENU_ITEMS_BOTTOM: IMenuItem[] = [
+const MENU_ITEMS_BOTTOM: MenuItemInterface[] = [
   {
     label: 'For developers',
     view: 'developers',
     icon: 'code',
-    onClick({ store }) {
+    onClick({ store }): void {
       store.showDevelopers();
     },
   },
 ];
 
-interface IProps {
+interface PropsInterface {
   store: typeof Store.Type;
 }
 
-const AppMenu: React.FC<IProps> = observer(({ store }) => {
+const AppMenu: React.FC<PropsInterface> = observer(({ store }) => {
   return (
     <Styled.AppMenu>
       <Styled.AppMenuItems>
@@ -60,7 +60,7 @@ const AppMenu: React.FC<IProps> = observer(({ store }) => {
                     : 'default'
                 }
                 active={store.currentView.name === menuItem.view}
-                onClick={() => {
+                onClick={(): void => {
                   menuItem.onClick({ store });
                 }}
               >
@@ -81,7 +81,7 @@ const AppMenu: React.FC<IProps> = observer(({ store }) => {
                     : 'default'
                 }
                 active={store.currentView.name === menuItem.view}
-                onClick={() => {
+                onClick={(): void => {
                   menuItem.onClick({ store });
                 }}
               >

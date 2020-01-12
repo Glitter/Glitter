@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import React, { RefObject } from 'react';
 import styled, { css } from 'styled-components';
 import rem from 'remcalc';
 import Avatar from '@material-ui/core/Avatar';
@@ -17,13 +18,14 @@ export const DevelopmentWidgetCard = styled(Card)`
   background-color: hsl(220, 40%, 27%);
 `;
 
-interface IWidgetIcon {
+interface WidgetIconInterface {
   type: 'vue' | 'react';
 }
 
 export const WidgetIcon = styled(
-  React.forwardRef(({ type, ...rest }: IWidgetIcon, ref) => (
-    <Avatar {...rest} />
+  // eslint-disable-next-line react/display-name, @typescript-eslint/no-unused-vars
+  React.forwardRef(({ type, ...rest }: WidgetIconInterface, ref) => (
+    <Avatar {...rest} ref={ref as RefObject<HTMLDivElement>} />
   )),
 )`
   ${props =>
@@ -34,7 +36,7 @@ export const WidgetIcon = styled(
       : css`
           background-color: hsl(193, 95%, 68%);
         `}
-` as any;
+` as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
 export const ReactAvatar = styled(Avatar)`
   background-color: hsl(193, 95%, 68%);

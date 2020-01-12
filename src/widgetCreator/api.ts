@@ -4,6 +4,12 @@ import { Either, fold } from 'fp-ts/lib/Either';
 import catchify from 'catchify';
 import { createFiles } from '@widgetCreator/createFiles';
 
+export interface CreateDevelopmentWidgetReturnInterface {
+  success: boolean;
+  message?: string;
+  path?: string;
+}
+
 export const api = ({
   uiWindow,
 }: {
@@ -20,12 +26,6 @@ export const api = ({
       );
     },
   );
-
-  interface ICreateDevelopmentWidgetReturn {
-    success: boolean;
-    message?: string;
-    path?: string;
-  }
 
   ipcMain.handle(
     'api/widgetCreator/createDevelopmentWidget',
@@ -50,7 +50,7 @@ export const api = ({
         width: number;
         height: number;
       },
-    ): Promise<ICreateDevelopmentWidgetReturn> => {
+    ): Promise<CreateDevelopmentWidgetReturnInterface> => {
       const [createdFilesError, createdFiles]: [
         Error,
         Either<string, { files: string[]; dir: string }>,
@@ -75,11 +75,11 @@ export const api = ({
       }
 
       return fold(
-        (errorMessage: string): ICreateDevelopmentWidgetReturn => ({
+        (errorMessage: string): CreateDevelopmentWidgetReturnInterface => ({
           success: false,
           message: errorMessage,
         }),
-        ({ dir }: { dir: string }): ICreateDevelopmentWidgetReturn => ({
+        ({ dir }: { dir: string }): CreateDevelopmentWidgetReturnInterface => ({
           success: true,
           path: dir,
         }),

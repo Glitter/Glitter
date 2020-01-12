@@ -1,4 +1,5 @@
 import { app, ipcRenderer } from 'electron';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const nativeRequire = require('../../main/node/nativeRequire');
 const Bundler = nativeRequire('parcel-bundler');
 
@@ -10,10 +11,14 @@ ipcRenderer.on(
     const alreadyWatching = parcelWatchers.get(widget.id);
 
     if (alreadyWatching !== undefined) {
+      ipcRenderer.invoke(
+        `api/bundler/startParcelWatcherCompleted/${widget.id}`,
+      );
       return;
     }
 
     const bundler = new Bundler(bundlerEntry, bundlerConfig);
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     let stopAccessingSecurityScopedResource: Function = () => {};
 
     if (widget.securityScopedBookmark) {
@@ -59,6 +64,7 @@ ipcRenderer.on(
 
     await bundler.bundle();
     ipcRenderer.invoke(`api/bundler/startedParcelWatcher/${widget.id}`);
+    ipcRenderer.invoke(`api/bundler/startParcelWatcherCompleted/${widget.id}`);
   },
 );
 

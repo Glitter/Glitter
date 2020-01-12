@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { types, flow } from 'mobx-state-tree';
+import { types, flow, cast } from 'mobx-state-tree';
 import catchify from 'catchify';
 import { listDevelopmentWidgets as apiListDevelopmentWidgets } from '@ui/api/widgetLoader';
 import { listDevelopmentWidgetsInstances as apiListDevelopmentWidgetsInstances } from '@ui/api/widgetInstantiator';
@@ -26,7 +26,7 @@ const DevelopmentWidget = types.model({
   id: types.identifier,
 });
 
-const DevelopmentWidgetsValue = types.array(DevelopmentWidget);
+export const DevelopmentWidgetsValue = types.array(DevelopmentWidget);
 
 const DevelopmentWidgets = types.model({
   value: DevelopmentWidgetsValue,
@@ -49,7 +49,9 @@ export const DevelopmentWidgetInstance = types.model({
   }),
 });
 
-const DevelopmentWidgetsInstancesValue = types.array(DevelopmentWidgetInstance);
+export const DevelopmentWidgetsInstancesValue = types.array(
+  DevelopmentWidgetInstance,
+);
 
 const DevelopmentWidgetsInstances = types.model({
   value: DevelopmentWidgetsInstancesValue,
@@ -68,10 +70,12 @@ export const Store = types
     developmentWidgetsInstances: DevelopmentWidgetsInstances,
   })
   .views(self => ({
-    get availableWidgets() {
+    get availableWidgets(): typeof DevelopmentWidgetsValue.Type {
       return self.developmentWidgets.value;
     },
-    screenDevelopmentWidgetInstances(displayId?: number) {
+    screenDevelopmentWidgetInstances(
+      displayId?: number,
+    ): typeof DevelopmentWidgetInstance.Type[] {
       if (displayId === undefined) {
         return [];
       }
@@ -82,41 +86,12 @@ export const Store = types
     },
   }))
   .actions(self => {
-    // Views
-    const setCurrentView = (view: typeof CurrentView.Type) => {
-      self.currentView = view;
-    };
-    const showHome = () => {
-      self.currentView = {
-        name: 'home',
-        title: 'Dashboard',
-      };
-
-      listDevelopmentWidgets({ silent: true });
-      listDevelopmentWidgetsInstances({ silent: true });
-    };
-    const showWidgets = () => {
-      self.currentView = {
-        name: 'widgets',
-        title: 'Widgets',
-      };
-      listDevelopmentWidgets({ silent: true });
-      listDevelopmentWidgetsInstances({ silent: true });
-    };
-    const showDevelopers = () => {
-      self.currentView = {
-        name: 'developers',
-        title: 'For developers',
-      };
-      listDevelopmentWidgets({ silent: true });
-    };
-
     // Development
     const listDevelopmentWidgets = flow(function* listDevelopmentWidgets({
       silent = false,
     }: { silent?: boolean } = {}) {
       if (silent === false) {
-        self.developmentWidgets.value = [] as any;
+        self.developmentWidgets.value = cast([]);
         self.developmentWidgets.state = 'pending';
       }
 
@@ -133,7 +108,7 @@ export const Store = types
       self.developmentWidgets.value = developmentWidgets;
       self.developmentWidgets.state = 'fulfilled';
     });
-    const addWidgetLog = ({ id, text }: { id: string; text: string }) => {
+    const addWidgetLog = ({ id, text }: { id: string; text: string }): void => {
       self.developmentWidgetsLogs.set(id, [
         ...(self.developmentWidgetsLogs.get(id) || []),
         text,
@@ -146,7 +121,7 @@ export const Store = types
         silent = false,
       }: { silent?: boolean } = {}) {
         if (silent === false) {
-          self.developmentWidgetsInstances.value = [] as any;
+          self.developmentWidgetsInstances.value = cast([]);
           self.developmentWidgetsInstances.state = 'pending';
         }
 
@@ -164,6 +139,35 @@ export const Store = types
         self.developmentWidgetsInstances.state = 'fulfilled';
       },
     );
+
+    // Views
+    const setCurrentView = (view: typeof CurrentView.Type): void => {
+      self.currentView = view;
+    };
+    const showHome = (): void => {
+      self.currentView = {
+        name: 'home',
+        title: 'Dashboard',
+      };
+
+      listDevelopmentWidgets({ silent: true });
+      listDevelopmentWidgetsInstances({ silent: true });
+    };
+    const showWidgets = (): void => {
+      self.currentView = {
+        name: 'widgets',
+        title: 'Widgets',
+      };
+      listDevelopmentWidgets({ silent: true });
+      listDevelopmentWidgetsInstances({ silent: true });
+    };
+    const showDevelopers = (): void => {
+      self.currentView = {
+        name: 'developers',
+        title: 'For developers',
+      };
+      listDevelopmentWidgets({ silent: true });
+    };
 
     return {
       setCurrentView,

@@ -18,12 +18,18 @@ const allowedSizes = [
   768,
 ];
 
-const spacingSizes = allowedSizes.reduce(
-  (sizes, size): any => ({
+const spacingSizes: { [key: string]: string } = allowedSizes.reduce(
+  (sizes, size): { [key: string]: string } => ({
     ...sizes,
-    [size]: rem(size),
+    [size.toString()]: rem(size),
   }),
-  [],
+  {},
 );
 
-export const getSpacing = (size: number): number => spacingSizes[size];
+export const getSpacing = (size: number): string => {
+  if (spacingSizes[size.toString()] === undefined) {
+    return '';
+  }
+
+  return spacingSizes[size.toString()];
+};

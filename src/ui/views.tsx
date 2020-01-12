@@ -1,15 +1,17 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Home from '@ui/views/Home/Home';
 import Widgets from '@ui/views/Widgets/Widgets';
 import Developers from '@ui/views/Developers/Developers';
 import NotFound from '@ui/views/404';
 import { Store } from '@ui/store';
 
-interface IProps {
+interface RenderCurrentViewInterface {
   store: typeof Store.Type;
 }
 
-const renderCurrentView = ({ store }: IProps) => {
+const renderCurrentView = ({
+  store,
+}: RenderCurrentViewInterface): JSX.Element => {
   const view = store.currentView;
 
   switch (view.name) {
@@ -20,7 +22,7 @@ const renderCurrentView = ({ store }: IProps) => {
     case 'developers':
       return <Developers />;
     default:
-      return <NotFound store={store} />;
+      return <NotFound />;
   }
 };
 

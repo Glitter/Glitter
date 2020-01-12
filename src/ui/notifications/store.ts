@@ -14,10 +14,10 @@ export const Store = types
     notifications: Notifications,
   })
   .actions(self => {
-    const addNotification = (notification: typeof Notification.Type) => {
+    const addNotification = (notification: typeof Notification.Type): void => {
       self.notifications.push(notification);
     };
-    const removeNotification = (id: string) => {
+    const removeNotification = (id: string): void => {
       const notificationIndex = self.notifications.findIndex(
         notification => notification.id === id,
       );

@@ -1,11 +1,12 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import React, { RefObject } from 'react';
 import styled, { css } from 'styled-components';
 import rem from 'remcalc';
 import IconButton from '@material-ui/core/IconButton';
 import { getSpacing } from '@ui/css/utilities/spacing';
 import theme from '@ui/css/theme';
 
-interface IAppMenuItemButton {
+interface AppMenuItemButtonInterface {
   active: boolean;
 }
 
@@ -35,8 +36,9 @@ export const AppMenuItem = styled.li`
 `;
 
 export const AppMenuItemButton = styled(
-  React.forwardRef(({ active, ...rest }: IAppMenuItemButton, ref) => (
-    <IconButton {...rest} />
+  // eslint-disable-next-line react/display-name, @typescript-eslint/no-unused-vars
+  React.forwardRef(({ active, ...rest }: AppMenuItemButtonInterface, ref) => (
+    <IconButton {...rest} ref={ref as RefObject<HTMLButtonElement>} />
   )),
 )`
   background-color: hsla(0, 0%, 0%, 0.4);
@@ -50,4 +52,4 @@ export const AppMenuItemButton = styled(
       border-color: ${theme.palette.primary.light};
       color: ${theme.palette.primary.light};
     `}
-` as any;
+` as any; // eslint-disable-line @typescript-eslint/no-explicit-any

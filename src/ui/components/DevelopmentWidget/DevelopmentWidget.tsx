@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { observer } from 'mobx-react-lite';
 import catchify from 'catchify';
 import Typography from '@material-ui/core/Typography';
@@ -23,25 +24,22 @@ import { Notification } from '@ui/notifications/store';
 import { useStore as useNotificationsStore } from '@ui/notifications/hooks';
 import * as Styled from './DevelopmentWidget.css';
 
-interface IProps {
+interface DevelopmentWidgetInterface {
   path: string;
   title: string;
   subtitle?: string;
-  type: 'vue' | 'react';
+  type: string;
   description?: string;
   logs: string[];
   id: string;
   active: boolean;
 }
 
-const DevelopmentWidget: React.FC<IProps> = observer(
+const DevelopmentWidget: React.FC<DevelopmentWidgetInterface> = observer(
   ({ path, title, subtitle, type, description, logs = [], id, active }) => {
     const recognizedTypes = ['vue', 'react'];
-    const iconsMap = {
-      vue: 'vuejs',
-      react: 'react',
-    };
-    let settingsButton = React.createRef<HTMLButtonElement>();
+    const icon = type === 'vue' ? 'vuejs' : 'react';
+    const settingsButton = React.createRef<HTMLButtonElement>();
     const [
       settingsMenuAnchorEl,
       setSettingsMenuAnchorEl,
@@ -49,17 +47,17 @@ const DevelopmentWidget: React.FC<IProps> = observer(
     const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
     const onSettingsButtonClick = (
       event: React.MouseEvent<HTMLButtonElement>,
-    ) => {
+    ): void => {
       setSettingsMenuAnchorEl(event.currentTarget);
       setSettingsMenuOpen(true);
     };
-    const onClose = () => {
+    const onClose = (): void => {
       setSettingsMenuOpen(false);
       setSettingsMenuAnchorEl(null);
     };
     const store = useStore();
     const notificationsStore = useNotificationsStore();
-    const updateWidget = async () => {
+    const updateWidget = async (): Promise<void> => {
       const [updatedWidgetError, updatedWidget]: [
         Error,
         { success: boolean; message?: string },
@@ -94,7 +92,7 @@ const DevelopmentWidget: React.FC<IProps> = observer(
         }),
       );
     };
-    const removeWidget = async () => {
+    const removeWidget = async (): Promise<void> => {
       const [unloadedWidgetError, unloadedWidget]: [
         Error,
         { success: boolean; message?: string },
@@ -133,23 +131,25 @@ const DevelopmentWidget: React.FC<IProps> = observer(
     // Logs
     const [logsDialogOpen, setLogsDialogOpen] = useState(false);
 
-    const openLogsDialog = () => {
+    const openLogsDialog = (): void => {
       setLogsDialogOpen(true);
     };
-    const closeLogsDialog = () => {
+    const closeLogsDialog = (): void => {
       setLogsDialogOpen(false);
     };
 
     // Activity toggle
-    const activateWidget = async () => {
+    const activateWidget = async (): Promise<void> => {
       await toggleDevelopmentWidgetActive({ id, active: true });
       store.listDevelopmentWidgets({ silent: true });
     };
-    const deactivateWidget = async () => {
+    const deactivateWidget = async (): Promise<void> => {
       await toggleDevelopmentWidgetActive({ id, active: false });
       store.listDevelopmentWidgets({ silent: true });
     };
-    const onActivityToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onActivityToggle = (
+      event: React.ChangeEvent<HTMLInputElement>,
+    ): void => {
       if (event.target.checked) {
         activateWidget();
         return;
@@ -165,7 +165,7 @@ const DevelopmentWidget: React.FC<IProps> = observer(
             avatar={
               recognizedTypes.includes(type) && (
                 <Styled.WidgetIcon type={type}>
-                  <FontAwesomeIcon icon={['fab', iconsMap[type]] as IconProp} />
+                  <FontAwesomeIcon icon={['fab', icon] as IconProp} />
                 </Styled.WidgetIcon>
               )
             }
@@ -186,7 +186,7 @@ const DevelopmentWidget: React.FC<IProps> = observer(
             onClose={onClose}
           >
             <MenuItem
-              onClick={() => {
+              onClick={(): void => {
                 updateWidget();
                 onClose();
               }}
@@ -261,5 +261,16 @@ const DevelopmentWidget: React.FC<IProps> = observer(
     );
   },
 );
+
+DevelopmentWidget.propTypes = {
+  path: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  subtitle: PropTypes.string,
+  type: PropTypes.string.isRequired,
+  description: PropTypes.string,
+  logs: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+  id: PropTypes.string.isRequired,
+  active: PropTypes.bool.isRequired,
+};
 
 export default DevelopmentWidget;

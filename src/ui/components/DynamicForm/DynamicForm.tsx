@@ -1,23 +1,32 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import * as Styled from './DynamicForm.css';
 import DynamicFieldText, {
-  IDynamicFieldTextInput,
+  DynamicFieldTextInterface,
 } from '@ui/components/DynamicFieldText/DynamicFieldText';
 
-interface IProps {
-  fields: IDynamicFieldTextInput[];
-  state: any;
-  onChange: ({ state, name }: { state: any; name: string }) => void;
-  onSubmit?: (state: any) => void;
+type StateType = any; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+interface DynamicFormInterface {
+  fields: DynamicFieldTextInterface[];
+  state: StateType;
+  onChange: ({ state, name }: { state: StateType; name: string }) => void;
+  onSubmit?: (state: StateType) => void;
   onShouldValidate?: (name: string) => void;
 }
 
-interface IRenderFieldInput {
-  field: IDynamicFieldTextInput;
-  state: any;
+interface RenderFieldInterface {
+  field: DynamicFieldTextInterface;
+  state: StateType;
 }
 
-const getValue = ({ state, name }: { state: any; name: string }) => {
+const getValue = ({
+  state,
+  name,
+}: {
+  state: StateType;
+  name: string;
+}): Partial<StateType> | undefined => {
   if (typeof state[name] !== undefined) {
     return state[name];
   }
@@ -30,17 +39,23 @@ const renderField = ({
   state,
   onChange,
   onShouldValidate,
-}: IRenderFieldInput & {
-  onChange: (value: any) => void;
+}: RenderFieldInterface & {
+  onChange: (value: any) => void; // eslint-disable-line @typescript-eslint/no-explicit-any
   onShouldValidate: (name: string) => void;
-}) => {
+}): JSX.Element | null => {
   switch (field.type) {
     case 'text':
+      let value = getValue({ state, name: field.name });
+
+      if (typeof value !== 'string') {
+        value = new String(value);
+      }
+
       return (
         <DynamicFieldText
           {...field}
-          value={getValue({ state, name: field.name })}
-          onChange={event => {
+          value={(value as unknown) as string}
+          onChange={(event): void => {
             onChange(event.target.value);
           }}
           onShouldValidate={onShouldValidate}
@@ -51,7 +66,7 @@ const renderField = ({
   }
 };
 
-const DynamicForm: React.FC<IProps> = ({
+const DynamicForm: React.FC<DynamicFormInterface> = ({
   fields,
   state,
   onChange,
@@ -60,7 +75,7 @@ const DynamicForm: React.FC<IProps> = ({
 }) => {
   return (
     <Styled.DynamicForm
-      onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
+      onSubmit={(event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault();
         onSubmit && onSubmit(state);
       }}
@@ -87,6 +102,14 @@ const DynamicForm: React.FC<IProps> = ({
       ))}
     </Styled.DynamicForm>
   );
+};
+
+DynamicForm.propTypes = {
+  fields: PropTypes.array.isRequired,
+  state: PropTypes.any.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func,
+  onShouldValidate: PropTypes.func,
 };
 
 export default DynamicForm;

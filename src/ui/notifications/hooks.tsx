@@ -1,10 +1,14 @@
 import React from 'react';
-import notificationsStore from '@ui/notifications/store';
+import notificationsStore, { Store } from '@ui/notifications/store';
 
 // Main store
 const storeContext = React.createContext(notificationsStore);
 
-export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
+export const StoreProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}): JSX.Element => {
   return (
     <storeContext.Provider value={notificationsStore}>
       {children}
@@ -12,7 +16,7 @@ export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export const useStore = () => {
+export const useStore = (): typeof Store.Type => {
   const store = React.useContext(storeContext);
 
   if (!store) {
