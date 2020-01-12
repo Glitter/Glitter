@@ -139,11 +139,11 @@ const DevelopmentWidget: React.FC<DevelopmentWidgetInterface> = observer(
     };
 
     // Activity toggle
-    const activateWidget = async (): void => {
+    const activateWidget = async (): Promise<void> => {
       await toggleDevelopmentWidgetActive({ id, active: true });
       store.listDevelopmentWidgets({ silent: true });
     };
-    const deactivateWidget = async (): void => {
+    const deactivateWidget = async (): Promise<void> => {
       await toggleDevelopmentWidgetActive({ id, active: false });
       store.listDevelopmentWidgets({ silent: true });
     };
