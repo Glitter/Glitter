@@ -13,7 +13,7 @@ export const getBundlerWindow = async (): Promise<Electron.BrowserWindow> => {
       nodeIntegration: true,
     },
     title: '',
-    show: false,
+    // show: false,
   });
 
   await bundlerWindow.loadURL(BUNDLER_WINDOW_WEBPACK_ENTRY);

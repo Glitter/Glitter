@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import React, { RefObject } from 'react';
 import styled, { css } from 'styled-components';
 import rem from 'remcalc';
 import Avatar from '@material-ui/core/Avatar';
@@ -23,12 +24,11 @@ interface WidgetIconInterface {
 
 export const WidgetIcon = styled(
   // eslint-disable-next-line react/display-name, @typescript-eslint/no-unused-vars
-  React.forwardRef(({ type, ...rest }: WidgetIconInterface) => (
-    <Avatar {...rest} />
+  React.forwardRef(({ type, ...rest }: WidgetIconInterface, ref) => (
+    <Avatar {...rest} ref={ref as RefObject<HTMLDivElement>} />
   )),
 )`
-  ${// eslint-disable @typescript-eslint/explicit-function-return-type
-  props =>
+  ${props =>
     props.type === 'vue'
       ? css`
           background-color: hsl(153, 48%, 49%);

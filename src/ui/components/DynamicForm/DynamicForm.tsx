@@ -75,7 +75,7 @@ const DynamicForm: React.FC<DynamicFormInterface> = ({
 }) => {
   return (
     <Styled.DynamicForm
-      onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
+      onSubmit={(event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault();
         onSubmit && onSubmit(state);
       }}

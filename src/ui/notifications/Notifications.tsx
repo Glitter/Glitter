@@ -7,15 +7,16 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { useStore as useNotificationsStore } from '@ui/notifications/hooks';
 import * as Styled from './Notifications.css';
 
-const Notifications = () => {
+const Notifications: React.FC = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarText, setSnackbarText] = useState('');
   const [notificationId, setNotificationId] = useState('');
   const [notificationType, setNotificationType] = useState('success');
   const onSnackbarClose = (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     _event: React.SyntheticEvent<any, Event>,
     reason: string,
-  ) => {
+  ): void => {
     if (reason === 'clickaway') {
       return;
     }
@@ -25,7 +26,7 @@ const Notifications = () => {
 
   const notificationsStore = useNotificationsStore();
 
-  const processQueue = () => {
+  const processQueue = (): void => {
     if (notificationsStore.notifications.length === 0) {
       return;
     }
@@ -38,7 +39,7 @@ const Notifications = () => {
     setSnackbarOpen(true);
   };
 
-  const onExited = () => {
+  const onExited = (): void => {
     notificationsStore.removeNotification(notificationId);
     processQueue();
   };
@@ -58,8 +59,13 @@ const Notifications = () => {
     return stopWatchingNotifications;
   }, []);
 
-  const notificationContentTag = () => {
-    const message = ({ icon }: { icon: React.ReactElement<any> }) => (
+  const notificationContentTag = (): JSX.Element => {
+    const message = ({
+      icon,
+    }: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      icon: React.ReactElement<any>;
+    }): JSX.Element => (
       <span id="notifications-text">
         {icon}&nbsp;&nbsp;{snackbarText}
       </span>

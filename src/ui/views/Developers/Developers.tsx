@@ -223,7 +223,7 @@ const Developers: React.FC = observer(() => {
             failures.forEach(({ message }) => {
               notificationsStore.addNotification(
                 Notification.create({
-                  text: message,
+                  text: message as string,
                   type: 'error',
                 }),
               );
@@ -320,7 +320,7 @@ const Developers: React.FC = observer(() => {
             failures.forEach(({ message }) => {
               notificationsStore.addNotification(
                 Notification.create({
-                  text: message,
+                  text: message as string,
                   type: 'error',
                 }),
               );

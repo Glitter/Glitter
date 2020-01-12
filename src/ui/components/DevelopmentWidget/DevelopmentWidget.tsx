@@ -131,23 +131,25 @@ const DevelopmentWidget: React.FC<DevelopmentWidgetInterface> = observer(
     // Logs
     const [logsDialogOpen, setLogsDialogOpen] = useState(false);
 
-    const openLogsDialog = () => {
+    const openLogsDialog = (): void => {
       setLogsDialogOpen(true);
     };
-    const closeLogsDialog = () => {
+    const closeLogsDialog = (): void => {
       setLogsDialogOpen(false);
     };
 
     // Activity toggle
-    const activateWidget = async () => {
+    const activateWidget = async (): void => {
       await toggleDevelopmentWidgetActive({ id, active: true });
       store.listDevelopmentWidgets({ silent: true });
     };
-    const deactivateWidget = async () => {
+    const deactivateWidget = async (): void => {
       await toggleDevelopmentWidgetActive({ id, active: false });
       store.listDevelopmentWidgets({ silent: true });
     };
-    const onActivityToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onActivityToggle = (
+      event: React.ChangeEvent<HTMLInputElement>,
+    ): void => {
       if (event.target.checked) {
         activateWidget();
         return;
@@ -184,7 +186,7 @@ const DevelopmentWidget: React.FC<DevelopmentWidgetInterface> = observer(
             onClose={onClose}
           >
             <MenuItem
-              onClick={() => {
+              onClick={(): void => {
                 updateWidget();
                 onClose();
               }}

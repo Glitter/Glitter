@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import React, { RefObject } from 'react';
 import styled, { css } from 'styled-components';
 import rem from 'remcalc';
 import IconButton from '@material-ui/core/IconButton';
@@ -36,8 +37,8 @@ export const AppMenuItem = styled.li`
 
 export const AppMenuItemButton = styled(
   // eslint-disable-next-line react/display-name, @typescript-eslint/no-unused-vars
-  React.forwardRef(({ active, ...rest }: AppMenuItemButtonInterface) => (
-    <IconButton {...rest} />
+  React.forwardRef(({ active, ...rest }: AppMenuItemButtonInterface, ref) => (
+    <IconButton {...rest} ref={ref as RefObject<HTMLButtonElement>} />
   )),
 )`
   background-color: hsla(0, 0%, 0%, 0.4);
@@ -45,8 +46,7 @@ export const AppMenuItemButton = styled(
   border: 2px solid hsl(0, 0%, 15%);
   width: ${rem(52)};
 
-  ${// eslint-disable @typescript-eslint/explicit-function-return-type
-  props =>
+  ${props =>
     props.active &&
     css`
       border-color: ${theme.palette.primary.light};

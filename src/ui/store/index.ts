@@ -26,7 +26,7 @@ const DevelopmentWidget = types.model({
   id: types.identifier,
 });
 
-const DevelopmentWidgetsValue = types.array(DevelopmentWidget);
+export const DevelopmentWidgetsValue = types.array(DevelopmentWidget);
 
 const DevelopmentWidgets = types.model({
   value: DevelopmentWidgetsValue,
@@ -49,7 +49,9 @@ export const DevelopmentWidgetInstance = types.model({
   }),
 });
 
-const DevelopmentWidgetsInstancesValue = types.array(DevelopmentWidgetInstance);
+export const DevelopmentWidgetsInstancesValue = types.array(
+  DevelopmentWidgetInstance,
+);
 
 const DevelopmentWidgetsInstances = types.model({
   value: DevelopmentWidgetsInstancesValue,

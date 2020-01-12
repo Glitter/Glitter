@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export default function omit(
   obj: { [key: string]: any },
   omitKey: string,

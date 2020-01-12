@@ -17,6 +17,7 @@ listenForNotifications();
 listenForLogs();
 
 // Add TS support for requestIdleCallback
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type RequestIdleCallbackHandle = any;
 type RequestIdleCallbackOptions = {
   timeout: number;

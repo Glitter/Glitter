@@ -53,7 +53,7 @@ const Home: React.FC = observer(() => {
             <Button
               size="small"
               color="primary"
-              onClick={() => {
+              onClick={(): void => {
                 store.showDevelopers();
               }}
             >
