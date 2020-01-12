@@ -248,6 +248,7 @@ export const init = () => {
       return;
     }
 
+    ipcMain.removeHandler(`api/bundler/startedParcelWatcher/${id}`);
     ipcMain.handleOnce(`api/bundler/startedParcelWatcher/${id}`, () => {
       widgetInstances.forEach(widgetInstance => {
         destroyWidgetInstance(widgetInstance.id);

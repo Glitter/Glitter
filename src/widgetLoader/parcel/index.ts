@@ -11,6 +11,9 @@ ipcRenderer.on(
     const alreadyWatching = parcelWatchers.get(widget.id);
 
     if (alreadyWatching !== undefined) {
+      ipcRenderer.invoke(
+        `api/bundler/startParcelWatcherCompleted/${widget.id}`,
+      );
       return;
     }
 
@@ -61,6 +64,7 @@ ipcRenderer.on(
 
     await bundler.bundle();
     ipcRenderer.invoke(`api/bundler/startedParcelWatcher/${widget.id}`);
+    ipcRenderer.invoke(`api/bundler/startParcelWatcherCompleted/${widget.id}`);
   },
 );
 

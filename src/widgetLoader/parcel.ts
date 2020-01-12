@@ -53,9 +53,15 @@ export const startParcelWatcher = async ({
   });
 
   return new Promise(resolve => {
-    ipcMain.handleOnce(`api/bundler/startedParcelWatcher/${widget.id}`, () => {
-      resolve();
-    });
+    ipcMain.removeHandler(
+      `api/bundler/startParcelWatcherCompleted/${widget.id}`,
+    );
+    ipcMain.handleOnce(
+      `api/bundler/startParcelWatcherCompleted/${widget.id}`,
+      () => {
+        resolve();
+      },
+    );
   });
 };
 
