@@ -111,6 +111,8 @@ const createWidgetInstance = ({
   widgetWindow.loadURL(widgetHtml);
   widgetWindow.blur();
 
+  getUiWindow().focus();
+
   widgetWindow.excludedFromShownWindowsMenu = true;
 
   // Emitted when the window is closed.
