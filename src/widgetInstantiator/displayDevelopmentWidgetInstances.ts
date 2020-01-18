@@ -39,7 +39,6 @@ export const destroyWidgetInstance = (widgetInstanceId: string) => {
   const widgetInstanceWindow = aliveWidgetsInstances.get(widgetInstanceId);
 
   widgetInstanceWindow!.destroy();
-  aliveWidgetsInstances.delete(widgetInstanceId);
 };
 
 const calculateWidgetInstanceCoordinates = ({
