@@ -33,7 +33,10 @@ export const loadDevelopmentWidget = async ({
 
   if (existingWidget !== undefined) {
     // This widget is already loaded, we only reload the config
-    store.updateWidgetConfig({ id: existingWidget.id, config: widgetConfig });
+    store.updateWidgetConfig({
+      id: existingWidget.id,
+      config: { ...existingWidget.config, ...widgetConfig },
+    });
     return right('Widget successfully updated');
   }
 
