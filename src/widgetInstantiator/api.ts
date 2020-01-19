@@ -9,11 +9,7 @@ import { setDevelopmentWidgetInstancePosition } from '@widgetInstantiator/setDev
 import { setDevelopmentWidgetInstanceSettings } from '@widgetInstantiator/setDevelopmentWidgetInstanceSettings';
 import { DevelopmentWidgetInstance } from '@appStore/development';
 
-export const api = ({
-  uiWindow,
-}: {
-  uiWindow: Electron.BrowserWindow | null;
-}): void => {
+export const api = (): void => {
   ipcMain.handle(
     'api/widgetInstantiator/listDevelopmentWidgetsInstances',
     async () => {

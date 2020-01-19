@@ -6,7 +6,7 @@ import { verifyDevelopmentWidget } from '@widgetLoader/verifyDevelopmentWidget';
 import { Either, left, right, isLeft } from 'fp-ts/lib/Either';
 import { startParcelWatcher } from '@widgetLoader/parcel';
 
-interface ILoadDevelopmentWidgetInput {
+interface LoadDevelopmentWidgetInputInterface {
   dir: string;
   securityScopedBookmark?: string;
 }
@@ -14,7 +14,7 @@ interface ILoadDevelopmentWidgetInput {
 export const loadDevelopmentWidget = async ({
   dir,
   securityScopedBookmark,
-}: ILoadDevelopmentWidgetInput): Promise<Either<string, string>> => {
+}: LoadDevelopmentWidgetInputInterface): Promise<Either<string, string>> => {
   const [verifyWidgetError, verifyWidgetResult]: [
     Error,
     Either<string, typeof DevelopmentWidgetConfig.Type>,

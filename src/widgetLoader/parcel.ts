@@ -7,13 +7,13 @@ import { getUiWindow } from '@main/uiWindow';
 import catchify from 'catchify';
 import { getBundlerWindow } from '@main/bundlerWindow';
 
-interface IStartParcelWatcherInput {
+interface StartParcelWatcherInputInterface {
   id: string;
 }
 
 export const startParcelWatcher = async ({
   id,
-}: IStartParcelWatcherInput): Promise<Either<string, string>> => {
+}: StartParcelWatcherInputInterface): Promise<Either<string, string>> => {
   const widget = store.widgets.find(storeWidget => storeWidget.id === id);
 
   if (widget === undefined) {
@@ -65,13 +65,13 @@ export const startParcelWatcher = async ({
   });
 };
 
-interface IStopParcelWatcherInput {
+interface StopParcelWatcherInputInterface {
   id: string;
 }
 
 export const stopParcelWatcher = async ({
   id,
-}: IStopParcelWatcherInput): Promise<Either<string, string>> => {
+}: StopParcelWatcherInputInterface): Promise<Either<string, string>> => {
   const bundlerWindow = await getBundlerWindow();
 
   bundlerWindow.webContents.send('api/bundler/stopParcelWatcher', {

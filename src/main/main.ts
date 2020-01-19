@@ -1,4 +1,4 @@
-declare var MAIN_WINDOW_WEBPACK_ENTRY: string;
+declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 import { app, shell } from 'electron';
 import { fold } from 'fp-ts/lib/Either';
 import { api as initApi } from '@main/api';
@@ -26,7 +26,7 @@ if (require('electron-squirrel-startup')) {
 
 app.isPackaged && fixPath();
 
-const instantiateUi = async () => {
+const instantiateUi = async (): Promise<void> => {
   const uiWindow = getUiWindow();
 
   uiWindow.webContents.on('new-window', function(e, url) {
@@ -52,7 +52,7 @@ const instantiateUi = async () => {
   return uiWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 };
 
-const instantiateBundler = async () => {
+const instantiateBundler = async (): Promise<void> => {
   await getBundlerWindow();
 };
 
@@ -62,10 +62,10 @@ const instantiateBundler = async () => {
 app.on('ready', () => {
   // Timeout necessary on Linux due to transparency bug
   // https://github.com/electron/electron/issues/2170
-  const initUi = () =>
+  const initUi = (): Promise<void> =>
     new Promise(resolve => {
-      setTimeout(() => {
-        instantiateUi().then(() => {
+      setTimeout((): void => {
+        instantiateUi().then((): void => {
           resolve();
         });
       }, 500);

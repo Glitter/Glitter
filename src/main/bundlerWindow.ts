@@ -1,4 +1,4 @@
-declare var BUNDLER_WINDOW_WEBPACK_ENTRY: string;
+declare const BUNDLER_WINDOW_WEBPACK_ENTRY: string;
 import { BrowserWindow } from 'electron';
 
 let bundlerWindow: Electron.BrowserWindow | null = null;

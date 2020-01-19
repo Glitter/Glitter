@@ -7,10 +7,24 @@ import { getUiWindow } from '@main/uiWindow';
 
 export const aliveWidgetsInstances = new Map<string, BrowserWindow>();
 
-const initWidgetsInstances = () => {
+const widgetInstanceIsAlive = (widgetInstanceId: string) => {
+  return aliveWidgetsInstances.get(widgetInstanceId) !== undefined;
+};
+
+export const destroyWidgetInstance = (widgetInstanceId: string) => {
+  const widgetInstanceWindow = aliveWidgetsInstances.get(widgetInstanceId);
+
+  if (widgetInstanceWindow === undefined) {
+    return;
+  }
+
+  widgetInstanceWindow.destroy();
+};
+
+const initWidgetsInstances = (): void => {
   const displays = screen.getAllDisplays();
 
-  store.widgetsInstances.forEach(widgetInstance => {
+  store.widgetsInstances.forEach((widgetInstance): void => {
     const display = displays.find(({ id }) => widgetInstance.displayId === id);
 
     if (display === undefined) {
@@ -31,27 +45,13 @@ const initWidgetsInstances = () => {
   });
 };
 
-const widgetInstanceIsAlive = (widgetInstanceId: string) => {
-  return aliveWidgetsInstances.get(widgetInstanceId) !== undefined;
-};
-
-export const destroyWidgetInstance = (widgetInstanceId: string) => {
-  const widgetInstanceWindow = aliveWidgetsInstances.get(widgetInstanceId);
-
-  if (widgetInstanceWindow === undefined) {
-    return;
-  }
-
-  widgetInstanceWindow.destroy();
-};
-
 const calculateWidgetInstanceCoordinates = ({
   widgetInstance,
   display,
 }: {
   widgetInstance: typeof DevelopmentWidgetInstance.Type;
   display: Display;
-}) => {
+}): { x: number; y: number } => {
   const realScreenX =
     widgetInstance.position.left !== undefined
       ? widgetInstance.position.left
@@ -77,7 +77,7 @@ const createWidgetInstance = ({
 }: {
   widgetInstance: typeof DevelopmentWidgetInstance.Type;
   display: Display;
-}) => {
+}): void => {
   const widgetHtml = urlFormat.format({
     protocol: 'file',
     slashes: true,
@@ -162,7 +162,7 @@ const createWidgetInstance = ({
   aliveWidgetsInstances.set(widgetInstance.id, widgetWindow);
 };
 
-const repositionWidgetsInstances = () => {
+const repositionWidgetsInstances = (): void => {
   const displays = screen.getAllDisplays();
 
   aliveWidgetsInstances.forEach((widgetWindow, widgetInstanceId) => {
@@ -194,7 +194,7 @@ const repositionWidgetsInstances = () => {
   });
 };
 
-export const init = () => {
+export const init = (): void => {
   initWidgetsInstances();
 
   screen.on('display-added', initWidgetsInstances);

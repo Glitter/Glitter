@@ -92,7 +92,7 @@ export const Store = types
       displayId: number;
       id: string;
       settings: { [key: string]: string | number };
-    }) => {
+    }): void => {
       self.widgetsInstances.push({
         id,
         widget: widgetId,
@@ -119,7 +119,7 @@ export const Store = types
         ),
       });
     };
-    const removeWidgetInstance = (id: string) => {
+    const removeWidgetInstance = (id: string): void => {
       const widgetInstanceIndex = self.widgetsInstances.findIndex(
         widgetInstance => widgetInstance.id === id,
       );
@@ -141,7 +141,7 @@ export const Store = types
         bottom?: number;
         left?: number;
       };
-    }) => {
+    }): void => {
       const widgetInstanceIndex = self.widgetsInstances.findIndex(
         widgetInstance => widgetInstance.id === id,
       );
@@ -163,7 +163,7 @@ export const Store = types
     }: {
       id: string;
       settings: { [key: string]: string | number };
-    }) => {
+    }): void => {
       const widgetInstanceIndex = self.widgetsInstances.findIndex(
         widgetInstance => widgetInstance.id === id,
       );
@@ -187,7 +187,7 @@ export const Store = types
         ),
       );
     };
-    const addWidget = (widget: typeof DevelopmentWidget.Type) => {
+    const addWidget = (widget: typeof DevelopmentWidget.Type): void => {
       self.widgets.push(widget);
     };
     const updateWidgetConfig = ({
@@ -196,7 +196,7 @@ export const Store = types
     }: {
       id: string;
       config: typeof DevelopmentWidgetConfig.Type;
-    }) => {
+    }): void => {
       const widgetIndex = self.widgets.findIndex(widget => widget.id === id);
 
       if (widgetIndex === -1) {
@@ -205,7 +205,7 @@ export const Store = types
 
       self.widgets[widgetIndex].config = config;
     };
-    const removeWidget = (id: string) => {
+    const removeWidget = (id: string): void => {
       const widgetIndex = self.widgets.findIndex(widget => widget.id === id);
 
       if (widgetIndex === -1) {
@@ -230,7 +230,7 @@ export const Store = types
     }: {
       id: string;
       active: boolean;
-    }) => {
+    }): void => {
       const widgetIndex = self.widgets.findIndex(widget => widget.id === id);
 
       if (widgetIndex === -1) {

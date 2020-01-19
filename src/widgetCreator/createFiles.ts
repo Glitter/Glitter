@@ -12,94 +12,6 @@ import {
   INDEX_HTML,
 } from '@widgetCreator/fileTemplates';
 
-interface CreateFilesInputInterface {
-  title: string;
-  subtitle?: string;
-  type: 'vue' | 'react';
-  description?: string;
-  dir: string;
-  width: number;
-  height: number;
-}
-
-export const createFiles = async ({
-  title,
-  subtitle = '',
-  type,
-  description = '',
-  dir,
-  width,
-  height,
-}: CreateFilesInputInterface): Promise<Either<
-  string,
-  { files: string[]; dir: string }
->> => {
-  const finalDir = path.resolve(dir, title);
-
-  // We create a directory if it does not already exist
-  const [ensureDirError]: [Error, undefined] = await catchify(
-    fs.ensureDir(finalDir),
-  );
-
-  if (ensureDirError) {
-    return left(`Could not create a directory ${title} under ${dir}`);
-  }
-
-  // Now that we have a directory, let's check if it's empty. We don't want to
-  // write into a non-empty directory (so as not to overwrite potentially
-  // important files)
-  const [readdirError, contents]: [Error, string[]] = await catchify(
-    fs.readdir(finalDir),
-  );
-
-  if (readdirError) {
-    return left(`Directory created but could not be read under ${dir}`);
-  }
-
-  if (contents.length) {
-    return left(
-      `Directory ${finalDir} is not empty. We decided not to write there so as not to overwrite potentially important files`,
-    );
-  }
-
-  // Time to write the files
-  const [filesWrittenError, filesWritten]: [Error, Either<string, string[]>] =
-    type === 'vue'
-      ? await catchify(
-          createVueFiles({
-            title,
-            subtitle,
-            description,
-            dir: finalDir,
-            width,
-            height,
-          }),
-        )
-      : await catchify(
-          createReactFiles({
-            title,
-            subtitle,
-            description,
-            dir: finalDir,
-            width,
-            height,
-          }),
-        );
-
-  if (filesWrittenError) {
-    return left('Something went wrong while writing the files');
-  }
-
-  if (isLeft(filesWritten)) {
-    return filesWritten;
-  }
-
-  return right({
-    files: filesWritten.right,
-    dir: finalDir,
-  });
-};
-
 interface CreateVueFilesInputInterface {
   title: string;
   subtitle: string;
@@ -142,6 +54,7 @@ const createVueFiles = async ({
       contents: INDEX_HTML({ type: 'vue' }),
     },
   ];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fileWrites: Promise<Either<any, any>>[] = [];
 
   files.forEach(file => {
@@ -236,6 +149,7 @@ const createReactFiles = async ({
       contents: CSS_REACT(),
     },
   ];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fileWrites: Promise<Either<any, any>>[] = [];
 
   files.forEach(file => {
@@ -281,4 +195,92 @@ const createReactFiles = async ({
       )(fileWritten),
     ),
   );
+};
+
+interface CreateFilesInputInterface {
+  title: string;
+  subtitle?: string;
+  type: 'vue' | 'react';
+  description?: string;
+  dir: string;
+  width: number;
+  height: number;
+}
+
+export const createFiles = async ({
+  title,
+  subtitle = '',
+  type,
+  description = '',
+  dir,
+  width,
+  height,
+}: CreateFilesInputInterface): Promise<Either<
+  string,
+  { files: string[]; dir: string }
+>> => {
+  const finalDir = path.resolve(dir, title);
+
+  // We create a directory if it does not already exist
+  const [ensureDirError]: [Error, undefined] = await catchify(
+    fs.ensureDir(finalDir),
+  );
+
+  if (ensureDirError) {
+    return left(`Could not create a directory ${title} under ${dir}`);
+  }
+
+  // Now that we have a directory, let's check if it's empty. We don't want to
+  // write into a non-empty directory (so as not to overwrite potentially
+  // important files)
+  const [readdirError, contents]: [Error, string[]] = await catchify(
+    fs.readdir(finalDir),
+  );
+
+  if (readdirError) {
+    return left(`Directory created but could not be read under ${dir}`);
+  }
+
+  if (contents.length) {
+    return left(
+      `Directory ${finalDir} is not empty. We decided not to write there so as not to overwrite potentially important files`,
+    );
+  }
+
+  // Time to write the files
+  const [filesWrittenError, filesWritten]: [Error, Either<string, string[]>] =
+    type === 'vue'
+      ? await catchify(
+          createVueFiles({
+            title,
+            subtitle,
+            description,
+            dir: finalDir,
+            width,
+            height,
+          }),
+        )
+      : await catchify(
+          createReactFiles({
+            title,
+            subtitle,
+            description,
+            dir: finalDir,
+            width,
+            height,
+          }),
+        );
+
+  if (filesWrittenError) {
+    return left('Something went wrong while writing the files');
+  }
+
+  if (isLeft(filesWritten)) {
+    return filesWritten;
+  }
+
+  return right({
+    files: filesWritten.right,
+    dir: finalDir,
+  });
 };
