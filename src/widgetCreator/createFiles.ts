@@ -12,13 +12,12 @@ import {
   INDEX_HTML,
 } from '@widgetCreator/fileTemplates';
 
-interface ICreateFilesInput {
+interface CreateFilesInputInterface {
   title: string;
   subtitle?: string;
   type: 'vue' | 'react';
   description?: string;
   dir: string;
-  active: boolean;
   width: number;
   height: number;
 }
@@ -29,10 +28,9 @@ export const createFiles = async ({
   type,
   description = '',
   dir,
-  active,
   width,
   height,
-}: ICreateFilesInput): Promise<Either<
+}: CreateFilesInputInterface): Promise<Either<
   string,
   { files: string[]; dir: string }
 >> => {
@@ -73,7 +71,6 @@ export const createFiles = async ({
             subtitle,
             description,
             dir: finalDir,
-            active,
             width,
             height,
           }),
@@ -84,7 +81,6 @@ export const createFiles = async ({
             subtitle,
             description,
             dir: finalDir,
-            active,
             width,
             height,
           }),
@@ -104,12 +100,11 @@ export const createFiles = async ({
   });
 };
 
-interface ICreateVueFilesInput {
+interface CreateVueFilesInputInterface {
   title: string;
   subtitle: string;
   description: string;
   dir: string;
-  active: boolean;
   width: number;
   height: number;
 }
@@ -119,10 +114,9 @@ const createVueFiles = async ({
   subtitle,
   description,
   dir,
-  active,
   width,
   height,
-}: ICreateVueFilesInput): Promise<Either<string, string[]>> => {
+}: CreateVueFilesInputInterface): Promise<Either<string, string[]>> => {
   const files = [
     {
       name: 'package.json',
@@ -131,7 +125,6 @@ const createVueFiles = async ({
         subtitle,
         type: 'vue',
         description,
-        active,
         width,
         height,
       }),
@@ -197,12 +190,11 @@ const createVueFiles = async ({
   );
 };
 
-interface ICreateReactFilesInput {
+interface CreateReactFilesInputInterface {
   title: string;
   subtitle: string;
   description: string;
   dir: string;
-  active: boolean;
   width: number;
   height: number;
 }
@@ -212,10 +204,9 @@ const createReactFiles = async ({
   subtitle,
   description,
   dir,
-  active,
   width,
   height,
-}: ICreateReactFilesInput): Promise<Either<string, string[]>> => {
+}: CreateReactFilesInputInterface): Promise<Either<string, string[]>> => {
   const files = [
     {
       name: 'package.json',
@@ -224,7 +215,6 @@ const createReactFiles = async ({
         subtitle,
         type: 'react',
         description,
-        active,
         width,
         height,
       }),

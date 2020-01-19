@@ -37,7 +37,6 @@ export const api = ({
         subtitle = '',
         type,
         description = '',
-        active,
         width,
         height,
       }: {
@@ -46,7 +45,6 @@ export const api = ({
         subtitle?: string;
         type: 'vue' | 'react';
         description?: string;
-        active: boolean;
         width: number;
         height: number;
       },
@@ -61,7 +59,6 @@ export const api = ({
           subtitle,
           type,
           description,
-          active,
           width,
           height,
         }),

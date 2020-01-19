@@ -26,7 +26,8 @@ const getValue = ({
 }: {
   state: StateType;
   name: string;
-}): Partial<StateType> | undefined => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+}): any | undefined => {
   if (typeof state[name] !== undefined) {
     return state[name];
   }
@@ -47,7 +48,9 @@ const renderField = ({
     case 'text':
       let value = getValue({ state, name: field.name });
 
-      if (typeof value !== 'string') {
+      if (value === undefined) {
+        value = '';
+      } else if (typeof value !== 'string') {
         value = new String(value);
       }
 

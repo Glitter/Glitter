@@ -1,5 +1,6 @@
 import catchify from 'catchify';
 import uuid from 'uuid/v4';
+import { cast } from 'mobx-state-tree';
 import store, { DevelopmentWidgetConfig } from '@appStore/development';
 import { verifyDevelopmentWidget } from '@widgetLoader/verifyDevelopmentWidget';
 import { Either, left, right, isLeft } from 'fp-ts/lib/Either';
@@ -33,6 +34,10 @@ export const loadDevelopmentWidget = async ({
 
   if (existingWidget !== undefined) {
     // This widget is already loaded, we only reload the config
+    if (widgetConfig.settings === undefined) {
+      widgetConfig.settings = cast([]);
+    }
+
     store.updateWidgetConfig({
       id: existingWidget.id,
       config: { ...existingWidget.config, ...widgetConfig },

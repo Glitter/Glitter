@@ -72,6 +72,7 @@ const Developers: React.FC = observer(() => {
       label: 'Widget width',
       description: 'This is the width of your widget window',
       inputType: 'number' as 'number',
+      size: 'medium' as 'medium',
     },
     {
       name: 'height',
@@ -79,6 +80,7 @@ const Developers: React.FC = observer(() => {
       label: 'Widget height',
       description: 'This is the height of your widget window',
       inputType: 'number' as 'number',
+      size: 'medium' as 'medium',
     },
   ];
   const [validation, setValidation] = useState<{ [key: string]: string }>({});

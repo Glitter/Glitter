@@ -2,15 +2,20 @@ import uuid from 'uuid/v4';
 import store from '@appStore/development';
 import { Either, left, right } from 'fp-ts/lib/Either';
 
-interface IAddDevelopmentWidgetInstanceInput {
+interface AddDevelopmentWidgetInstanceInputInterface {
   widgetId: string;
   displayId: number;
+  settings: { [key: string]: string | number };
 }
 
 export const addDevelopmentWidgetInstance = async ({
   widgetId,
   displayId,
-}: IAddDevelopmentWidgetInstanceInput): Promise<Either<string, string>> => {
+  settings,
+}: AddDevelopmentWidgetInstanceInputInterface): Promise<Either<
+  string,
+  string
+>> => {
   const widget = store.widgets.find(storeWidget => storeWidget.id === widgetId);
 
   if (widget === undefined) {
@@ -21,6 +26,7 @@ export const addDevelopmentWidgetInstance = async ({
     widgetId,
     displayId,
     id: uuid(),
+    settings,
   });
 
   return right('Widget instance successfully created');

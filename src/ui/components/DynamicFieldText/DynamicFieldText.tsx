@@ -6,11 +6,8 @@ import * as Styled from './DynamicFieldText.css';
 export interface DynamicFieldTextInterface {
   name: string;
   type: string;
-  value?: string;
   label: string;
   description?: string;
-  error?: string;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   multiline?: boolean;
   inputType?:
     | 'text'
@@ -22,7 +19,14 @@ export interface DynamicFieldTextInterface {
     | 'password'
     | 'time'
     | 'url';
+  size?: 'small' | 'medium' | 'large';
+  required?: boolean;
+
+  // Not part of the field interface
+  value?: string;
+  error?: string;
   onShouldValidate?: (name: string) => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const DynamicFieldText: React.FC<DynamicFieldTextInterface> = ({
@@ -35,7 +39,14 @@ const DynamicFieldText: React.FC<DynamicFieldTextInterface> = ({
   multiline = false,
   inputType = 'text',
   onShouldValidate,
+  size = 'large',
 }) => {
+  const sizeToWidthMap = {
+    small: '100px',
+    medium: '200px',
+    large: '100%',
+  };
+
   return (
     <Styled.DynamicField>
       <TextField
@@ -49,11 +60,14 @@ const DynamicFieldText: React.FC<DynamicFieldTextInterface> = ({
         multiline={multiline}
         type={inputType}
         size="small"
-        fullWidth
         inputProps={{
           onBlur: (): void => {
             onShouldValidate && onShouldValidate(name);
           },
+        }}
+        fullWidth
+        style={{
+          maxWidth: sizeToWidthMap[size],
         }}
       />
     </Styled.DynamicField>
@@ -80,6 +94,7 @@ DynamicFieldText.propTypes = {
     'url',
   ]),
   onShouldValidate: PropTypes.func,
+  size: PropTypes.oneOf(['small', 'medium', 'large']),
 };
 
 export default DynamicFieldText;

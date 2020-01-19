@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import rem from 'remcalc';
 import color from 'color';
 import { getSpacing } from '@ui/css/utilities/spacing';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
 import theme from '@ui/css/theme';
 
 export const Widgets = styled.div`
@@ -14,8 +16,7 @@ export const ScreenContainer = styled.section`
   height: 70vh;
   justify-content: center;
   max-height: 700px;
-  max-width: 100%;
-  overflow: hidden;
+  max-width: calc(100% - ${rem(48)});
 `;
 
 export const Screen = styled.div`
@@ -38,29 +39,51 @@ export const ScreenEmpty = styled.div`
   text-align: center;
 `;
 
+export const ScreenWidgetInstanceTooltip = styled.div`
+  display: none;
+  height: 100%;
+  left: 100%;
+  padding-left: ${getSpacing(16)};
+  position: absolute;
+`;
+
+export const ScreenWidgetInstanceTooltipButtons = styled.div`
+  background-color: hsla(0, 0%, 0%, 0.5);
+  border-radius: ${rem(4)};
+  display: grid;
+  grid-gap: ${getSpacing(4)};
+  padding: ${getSpacing(4)};
+`;
+
+export const ScreenWidgetInstanceTooltipIcon = styled(IconButton)``;
+
 export const ScreenWidgetInstance = styled.div`
   background-color: ${color(theme.palette.primary.light)
     .fade(0.8)
     .string()};
   border: 1px solid ${theme.palette.primary.main};
   border-radius: ${rem(4)};
-  cursor: pointer;
   position: absolute;
   top: 0;
   left: 0;
+
+  &:hover ${ScreenWidgetInstanceTooltip} {
+    display: block;
+  }
 `;
 
 export const ScreenWidgetInstanceContent = styled.div`
+  cursor: move;
   height: 100%;
   left: 0;
+  overflow: hidden;
+  padding: ${getSpacing(4)};
   position: absolute;
   top: 0;
   width: 100%;
 `;
 
-export const ManageWidgetInstanceDialogTitle = styled.span`
-  color: ${theme.palette.primary.light};
-`;
+export const ScreenWidgetInstanceTitle = styled(Typography)``;
 
 export const Actions = styled.section`
   align-items: center;

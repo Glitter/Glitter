@@ -38,7 +38,11 @@ const widgetInstanceIsAlive = (widgetInstanceId: string) => {
 export const destroyWidgetInstance = (widgetInstanceId: string) => {
   const widgetInstanceWindow = aliveWidgetsInstances.get(widgetInstanceId);
 
-  widgetInstanceWindow!.destroy();
+  if (widgetInstanceWindow === undefined) {
+    return;
+  }
+
+  widgetInstanceWindow.destroy();
 };
 
 const calculateWidgetInstanceCoordinates = ({
@@ -108,6 +112,36 @@ const createWidgetInstance = ({
 
   // and load the index.html of the app.
   widgetWindow.loadURL(widgetHtml);
+
+  widgetWindow.webContents.on('dom-ready', (): void => {
+    // We need to expose widget instance settings to the BrowserWindow
+    const settings =
+      widgetInstance.settings.reduce((acc, cur) => {
+        return {
+          ...acc,
+          [cur.name]: cur.value,
+        };
+      }, {}) || {};
+    const jsCode = `
+      globalThis.Glitter = {
+        currentWidget: {
+          getSettings() {
+            return ${JSON.stringify(settings)};
+          },
+        },
+      };
+
+      globalThis.dispatchEvent(new CustomEvent('GlitterReady', {
+        detail: {
+          Glitter: globalThis.Glitter,
+          settings: globalThis.Glitter.currentWidget.getSettings(),
+        }
+      }));
+    `;
+
+    widgetWindow.webContents.executeJavaScript(jsCode);
+  });
+
   widgetWindow.blur();
 
   getUiWindow().focus();
@@ -210,6 +244,23 @@ export const init = () => {
     widgetInstances.forEach(widgetInstance => {
       destroyWidgetInstance(widgetInstance.id);
     });
+
+    process.nextTick(initWidgetsInstances);
+  });
+
+  // Reload widget instances on widget instance settings update
+  onAction(store, ({ name, args }) => {
+    if (name !== 'setWidgetInstanceSettings' || args === undefined) {
+      return;
+    }
+
+    const [{ id }] = args as [{ id: string }];
+
+    if (widgetInstanceIsAlive(id) === false) {
+      return;
+    }
+
+    destroyWidgetInstance(id);
 
     process.nextTick(initWidgetsInstances);
   });

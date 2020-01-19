@@ -2,25 +2,27 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { remote, ipcRenderer } from 'electron';
 import { useMeasure } from 'react-use';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { Browser as KawaiiBrowser } from 'react-kawaii';
 import theme from '@ui/css/theme';
-import Widget from '@ui/components/Widget/Widget';
 import {
   addDevelopmentWidgetInstance as apiAddDevelopmentWidgetInstance,
   removeDevelopmentWidgetInstance as apiRemoveDevelopmentWidgetInstance,
   setDevelopmentWidgetInstancePosition as apiSetDevelopmentWidgetInstancePosition,
+  setDevelopmentWidgetInstanceSettings as apiSetDevelopmentWidgetInstanceSettings,
 } from '@ui/api/widgetInstantiator';
 import { useStore } from '@ui/store/hooks';
+import AddWidgetInstanceDialog from './AddWidgetInstanceDialog';
+import ManageWidgetInstanceDialog from './ManageWidgetInstanceDialog';
 import * as StyledAppPaper from '@ui/components/AppPaper/AppPaper.css';
 import * as Styled from './Widgets.css';
 
@@ -117,12 +119,14 @@ const Widgets: React.FC = observer(() => {
   const createDevelopmentWidgetInstance = async ({
     widgetId,
     displayId,
+    settings,
   }: {
     widgetId: string;
     displayId: number;
+    settings: { [key: string]: string | number };
   }): Promise<void> => {
     closeAddWidgetInstanceDialog();
-    await apiAddDevelopmentWidgetInstance({ widgetId, displayId });
+    await apiAddDevelopmentWidgetInstance({ widgetId, displayId, settings });
     await store.listDevelopmentWidgetsInstances({ silent: true });
   };
 
@@ -214,6 +218,7 @@ const Widgets: React.FC = observer(() => {
     setManageWidgetInstanceDialogOpen(false);
   };
 
+  // Delete widget instance
   const [
     deleteWidgetInstanceDialogOpen,
     setDeleteWidgetInstanceDialogOpen,
@@ -224,6 +229,9 @@ const Widgets: React.FC = observer(() => {
   const closeDeleteWidgetInstanceDialog = (): void => {
     setDeleteWidgetInstanceDialogOpen(false);
   };
+  const [widgetInstanceIdToDelete, setWidgetInstanceIdToDelete] = useState<
+    string | undefined
+  >(undefined);
 
   // Updating widget instances position
   const updateWidgetInstancePosition = ({
@@ -296,29 +304,6 @@ const Widgets: React.FC = observer(() => {
       return;
     }
 
-    // Let's check if the widget moved at all
-    const positionProps = ['top', 'right', 'bottom', 'left'] as [
-      'top',
-      'right',
-      'bottom',
-      'left',
-    ];
-    let allPositionPropsEqual = true;
-
-    positionProps.forEach(positionProp => {
-      if (widgetInstance.position[positionProp] !== position[positionProp]) {
-        allPositionPropsEqual = false;
-      }
-    });
-
-    if (allPositionPropsEqual === true) {
-      // The widget did not move at all, we instead open the widget instance
-      // management dialog
-      setSelectedWidgetInstanceId(widgetInstance.id);
-      openManageWidgetInstanceDialog();
-      return;
-    }
-
     apiSetDevelopmentWidgetInstancePosition({
       id: widgetInstanceId,
       position,
@@ -329,19 +314,12 @@ const Widgets: React.FC = observer(() => {
 
   // Manage widget instances tooltips
   const [
-    widgetsInstancesTooltipsOpen,
-    setWidgetsInstancesTooltipsOpen,
-  ] = useState(new Map<string, boolean>());
-  const [
     preventWidgetsInstancesTooltipsOpen,
     setPreventWidgetsInstancesTooltipsOpen,
   ] = useState(false);
 
   // Empty screen
   const [emptyScreenKawaiiMood, setEmptyScreenKawaiiMood] = useState('happy');
-
-  // Empty widgets dialog
-  const [emptyWidgetsKawaiiMood, setEmptyWidgetsKawaiiMood] = useState('happy');
 
   return (
     <Styled.Widgets>
@@ -390,14 +368,6 @@ const Widgets: React.FC = observer(() => {
                   bounds="parent"
                   onStart={(): void => {
                     setPreventWidgetsInstancesTooltipsOpen(true);
-                    setWidgetsInstancesTooltipsOpen(
-                      new Map(
-                        widgetsInstancesTooltipsOpen.set(
-                          widgetInstance.id,
-                          false,
-                        ),
-                      ),
-                    );
                   }}
                   onStop={(_e: DraggableEvent, data: DraggableData): void => {
                     setPreventWidgetsInstancesTooltipsOpen(false);
@@ -420,6 +390,7 @@ const Widgets: React.FC = observer(() => {
                     screenSize: displaySize,
                     renderedScreenSize: screenSize,
                   })}
+                  cancel=".js-prevent-dragging"
                 >
                   <Styled.ScreenWidgetInstance
                     style={{
@@ -433,82 +404,63 @@ const Widgets: React.FC = observer(() => {
                       }),
                     }}
                   >
-                    <Tooltip
-                      title={widgetInstance.widget.config.title}
-                      placement="right"
-                      open={
-                        widgetsInstancesTooltipsOpen.get(widgetInstance.id) ||
-                        false
-                      }
-                      onClose={(): void => {
-                        setWidgetsInstancesTooltipsOpen(
-                          new Map(
-                            widgetsInstancesTooltipsOpen.set(
-                              widgetInstance.id,
-                              false,
-                            ),
-                          ),
-                        );
-                      }}
-                      onOpen={(): void => {
-                        if (preventWidgetsInstancesTooltipsOpen === true) {
-                          return;
-                        }
-
-                        setWidgetsInstancesTooltipsOpen(
-                          new Map(
-                            widgetsInstancesTooltipsOpen.set(
-                              widgetInstance.id,
-                              true,
-                            ),
-                          ),
-                        );
-                      }}
-                    >
-                      <Styled.ScreenWidgetInstanceContent />
-                    </Tooltip>
+                    {preventWidgetsInstancesTooltipsOpen === false && (
+                      <Styled.ScreenWidgetInstanceTooltip className="js-prevent-dragging">
+                        <Styled.ScreenWidgetInstanceTooltipButtons>
+                          <Styled.ScreenWidgetInstanceTooltipIcon
+                            size="small"
+                            onClick={(): void => {
+                              setSelectedWidgetInstanceId(widgetInstance.id);
+                              openManageWidgetInstanceDialog();
+                            }}
+                          >
+                            <FontAwesomeIcon icon={['fad', 'cog']} />
+                          </Styled.ScreenWidgetInstanceTooltipIcon>
+                          <Styled.ScreenWidgetInstanceTooltipIcon
+                            size="small"
+                            onClick={(): void => {
+                              setWidgetInstanceIdToDelete(widgetInstance.id);
+                              openDeleteWidgetInstanceDialog();
+                            }}
+                          >
+                            <FontAwesomeIcon icon={['fad', 'minus-circle']} />
+                          </Styled.ScreenWidgetInstanceTooltipIcon>
+                        </Styled.ScreenWidgetInstanceTooltipButtons>
+                      </Styled.ScreenWidgetInstanceTooltip>
+                    )}
+                    <Styled.ScreenWidgetInstanceContent>
+                      <Styled.ScreenWidgetInstanceTitle variant="body2">
+                        {widgetInstance.widget.config.title}
+                      </Styled.ScreenWidgetInstanceTitle>
+                    </Styled.ScreenWidgetInstanceContent>
                   </Styled.ScreenWidgetInstance>
                 </Draggable>
               ))}
           </Styled.Screen>
         )}
       </Styled.ScreenContainer>
-      <Dialog
+
+      <ManageWidgetInstanceDialog
+        key={selectedWidgetInstanceId || ''}
         open={
           selectedWidgetInstanceId !== undefined &&
           manageWidgetInstanceDialogOpen
         }
         onClose={closeManageWidgetInstanceDialog}
-        PaperComponent={StyledAppPaper.AppPaper}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>
-          Manage{' '}
-          <Styled.ManageWidgetInstanceDialogTitle>
-            {
-              store.developmentWidgetsInstances.value.find(
-                widgetInstance =>
-                  widgetInstance.id === selectedWidgetInstanceId,
-              )?.widget?.config?.title
-            }
-          </Styled.ManageWidgetInstanceDialogTitle>{' '}
-          instance
-        </DialogTitle>
-        <DialogContent>
-          <Typography variant="body2"></Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="outlined"
-            color="default"
-            size="small"
-            onClick={openDeleteWidgetInstanceDialog}
-          >
-            Remove from screen
-          </Button>
-        </DialogActions>
-      </Dialog>
+        onSave={async (widgetInstanceConfiguration): Promise<void> => {
+          await apiSetDevelopmentWidgetInstanceSettings({
+            id: selectedWidgetInstanceId || '',
+            settings: widgetInstanceConfiguration,
+          });
+          closeManageWidgetInstanceDialog();
+        }}
+        onExited={async (): Promise<void> => {
+          setSelectedWidgetInstanceId(undefined);
+          await store.listDevelopmentWidgetsInstances({ silent: true });
+        }}
+        selectedWidgetInstanceId={selectedWidgetInstanceId}
+      />
+
       <Dialog
         open={deleteWidgetInstanceDialogOpen}
         onClose={closeDeleteWidgetInstanceDialog}
@@ -528,11 +480,9 @@ const Widgets: React.FC = observer(() => {
             color="default"
             size="small"
             onClick={async (): Promise<void> => {
-              setSelectedWidgetInstanceId(undefined);
               closeDeleteWidgetInstanceDialog();
-              closeManageWidgetInstanceDialog();
               await apiRemoveDevelopmentWidgetInstance(
-                selectedWidgetInstanceId || '',
+                widgetInstanceIdToDelete || '',
               );
               await store.listDevelopmentWidgetsInstances({ silent: true });
             }}
@@ -583,88 +533,21 @@ const Widgets: React.FC = observer(() => {
           Add widget to screen
         </Button>
       </Styled.Actions>
-      <Dialog
+
+      <AddWidgetInstanceDialog
         open={addWidgetInstanceDialogOpen}
         onClose={closeAddWidgetInstanceDialog}
-        PaperComponent={StyledAppPaper.AppPaper}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle>Add widget to screen</DialogTitle>
-        <DialogContent>
-          {store.availableWidgets.length === 0 && (
-            <Styled.NoWidgetsInstalled>
-              <KawaiiBrowser
-                mood={
-                  emptyWidgetsKawaiiMood as
-                    | 'happy'
-                    | 'sad'
-                    | 'shocked'
-                    | 'blissful'
-                    | 'lovestruck'
-                    | 'excited'
-                    | 'ko'
-                    | undefined
-                }
-                size={80}
-                color={theme.palette.secondary.main}
-              />
-              <div>
-                <Typography variant="h6">
-                  You don&apos;t have any widgets
-                </Typography>
-                <Typography variant="body1">
-                  Do not despair, you can start the developement of a new widget
-                  in the development area.
-                </Typography>
-              </div>
-              <Button
-                color="secondary"
-                variant="outlined"
-                size="small"
-                onClick={(): void => {
-                  store.showDevelopers();
-                }}
-                onMouseEnter={(): void => {
-                  setEmptyWidgetsKawaiiMood('excited');
-                }}
-                onMouseLeave={(): void => {
-                  setEmptyWidgetsKawaiiMood('sad');
-                }}
-              >
-                Go to the development area
-              </Button>
-            </Styled.NoWidgetsInstalled>
-          )}
-          <Styled.WidgetsGrid>
-            {store.availableWidgets.map(developmentWidget => (
-              <Widget
-                cardProps={{ elevation: 0 }}
-                key={developmentWidget.id}
-                title={developmentWidget.config.title}
-                subtitle={developmentWidget.config.subtitle}
-                type={developmentWidget.config.type}
-                description={developmentWidget.config.description}
-                actions={
-                  <Button
-                    color="default"
-                    variant="outlined"
-                    size="small"
-                    onClick={(): void => {
-                      createDevelopmentWidgetInstance({
-                        widgetId: developmentWidget.id,
-                        displayId: selectedDisplay?.id || 0,
-                      });
-                    }}
-                  >
-                    Add this widget
-                  </Button>
-                }
-              />
-            ))}
-          </Styled.WidgetsGrid>
-        </DialogContent>
-      </Dialog>
+        onCreateDevelopmentWidgetInstance={({
+          developmentWidget,
+          settings,
+        }): void => {
+          createDevelopmentWidgetInstance({
+            widgetId: developmentWidget.id,
+            displayId: selectedDisplay?.id || 0,
+            settings,
+          });
+        }}
+      />
     </Styled.Widgets>
   );
 });

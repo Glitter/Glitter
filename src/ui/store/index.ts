@@ -9,6 +9,37 @@ const CurrentView = types.model({
   title: types.optional(types.string, ''),
 });
 
+const DevelopmentWidgetSettingsField = types.model({
+  name: types.string,
+  type: types.string,
+  label: types.string,
+  description: types.optional(types.string, ''),
+  multiline: types.optional(types.boolean, false),
+  inputType: types.optional(
+    types.union(
+      types.literal('text'),
+      types.literal('number'),
+      types.literal('email'),
+      types.literal('tel'),
+      types.literal('color'),
+      types.literal('date'),
+      types.literal('password'),
+      types.literal('time'),
+      types.literal('url'),
+    ),
+    'text',
+  ),
+  size: types.optional(
+    types.union(
+      types.literal('small'),
+      types.literal('medium'),
+      types.literal('large'),
+    ),
+    'large',
+  ),
+  required: types.optional(types.boolean, false),
+});
+
 const DevelopmentWidgetConfig = types.model({
   title: types.string,
   subtitle: types.optional(types.string, ''),
@@ -18,9 +49,10 @@ const DevelopmentWidgetConfig = types.model({
   active: types.boolean,
   width: types.number,
   height: types.number,
+  settings: types.array(DevelopmentWidgetSettingsField),
 });
 
-const DevelopmentWidget = types.model({
+export const DevelopmentWidget = types.model({
   path: types.string,
   config: DevelopmentWidgetConfig,
   id: types.identifier,
@@ -37,6 +69,13 @@ const DevelopmentWidgets = types.model({
   ),
 });
 
+export const DevelopmentWidgetInstanceSettings = types.array(
+  types.model({
+    name: types.string,
+    value: types.union(types.number, types.string),
+  }),
+);
+
 export const DevelopmentWidgetInstance = types.model({
   id: types.string,
   widget: types.reference(DevelopmentWidget),
@@ -47,6 +86,7 @@ export const DevelopmentWidgetInstance = types.model({
     bottom: types.maybe(types.number),
     left: types.maybe(types.number),
   }),
+  settings: DevelopmentWidgetInstanceSettings,
 });
 
 export const DevelopmentWidgetsInstancesValue = types.array(
