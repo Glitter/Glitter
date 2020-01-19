@@ -7,11 +7,11 @@ import { getUiWindow } from '@main/uiWindow';
 
 export const aliveWidgetsInstances = new Map<string, BrowserWindow>();
 
-const widgetInstanceIsAlive = (widgetInstanceId: string) => {
+const widgetInstanceIsAlive = (widgetInstanceId: string): boolean => {
   return aliveWidgetsInstances.get(widgetInstanceId) !== undefined;
 };
 
-export const destroyWidgetInstance = (widgetInstanceId: string) => {
+export const destroyWidgetInstance = (widgetInstanceId: string): void => {
   const widgetInstanceWindow = aliveWidgetsInstances.get(widgetInstanceId);
 
   if (widgetInstanceWindow === undefined) {
@@ -19,30 +19,6 @@ export const destroyWidgetInstance = (widgetInstanceId: string) => {
   }
 
   widgetInstanceWindow.destroy();
-};
-
-const initWidgetsInstances = (): void => {
-  const displays = screen.getAllDisplays();
-
-  store.widgetsInstances.forEach((widgetInstance): void => {
-    const display = displays.find(({ id }) => widgetInstance.displayId === id);
-
-    if (display === undefined) {
-      if (widgetInstanceIsAlive(widgetInstance.id)) {
-        // Looks like the screen is gone, let's remove the widget instance
-        destroyWidgetInstance(widgetInstance.id);
-      }
-
-      return;
-    }
-
-    if (widgetInstanceIsAlive(widgetInstance.id)) {
-      // Widget instance is already alive, nothing to do here
-      return;
-    }
-
-    createWidgetInstance({ widgetInstance, display });
-  });
 };
 
 const calculateWidgetInstanceCoordinates = ({
@@ -160,6 +136,30 @@ const createWidgetInstance = ({
   }
 
   aliveWidgetsInstances.set(widgetInstance.id, widgetWindow);
+};
+
+const initWidgetsInstances = (): void => {
+  const displays = screen.getAllDisplays();
+
+  store.widgetsInstances.forEach((widgetInstance): void => {
+    const display = displays.find(({ id }) => widgetInstance.displayId === id);
+
+    if (display === undefined) {
+      if (widgetInstanceIsAlive(widgetInstance.id)) {
+        // Looks like the screen is gone, let's remove the widget instance
+        destroyWidgetInstance(widgetInstance.id);
+      }
+
+      return;
+    }
+
+    if (widgetInstanceIsAlive(widgetInstance.id)) {
+      // Widget instance is already alive, nothing to do here
+      return;
+    }
+
+    createWidgetInstance({ widgetInstance, display });
+  });
 };
 
 const repositionWidgetsInstances = (): void => {
