@@ -36,6 +36,37 @@ const DevelopmentWidgetSettingsField = types.model({
   required: types.optional(types.boolean, false),
 });
 
+const DevelopmentWidgetSettingsField = types.model({
+  name: types.string,
+  type: types.string,
+  label: types.string,
+  description: types.optional(types.string, ''),
+  multiline: types.optional(types.boolean, false),
+  inputType: types.optional(
+    types.union(
+      types.literal('text'),
+      types.literal('number'),
+      types.literal('email'),
+      types.literal('tel'),
+      types.literal('color'),
+      types.literal('date'),
+      types.literal('password'),
+      types.literal('time'),
+      types.literal('url'),
+    ),
+    'text',
+  ),
+  size: types.optional(
+    types.union(
+      types.literal('small'),
+      types.literal('medium'),
+      types.literal('large'),
+    ),
+    'large',
+  ),
+  required: types.optional(types.boolean, false),
+});
+
 export const DevelopmentWidgetConfig = types.model({
   title: types.string,
   subtitle: types.optional(types.string, ''),
