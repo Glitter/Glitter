@@ -2,7 +2,7 @@ import { Either, left, right } from 'fp-ts/lib/Either';
 import store from '@appStore/development';
 import { startParcelWatcher, stopParcelWatcher } from '@widgetLoader/parcel';
 
-interface IToggleDevelopmentWidgetActiveInput {
+interface ToggleDevelopmentWidgetActiveInputInterface {
   id: string;
   active: boolean;
 }
@@ -10,7 +10,10 @@ interface IToggleDevelopmentWidgetActiveInput {
 export const toggleDevelopmentWidgetActive = async ({
   id,
   active,
-}: IToggleDevelopmentWidgetActiveInput): Promise<Either<string, string>> => {
+}: ToggleDevelopmentWidgetActiveInputInterface): Promise<Either<
+  string,
+  string
+>> => {
   const widget = store.widgets.find(storeWidget => storeWidget.id === id);
 
   if (widget === undefined) {

@@ -12,13 +12,197 @@ import {
   INDEX_HTML,
 } from '@widgetCreator/fileTemplates';
 
-interface ICreateFilesInput {
+interface CreateVueFilesInputInterface {
+  title: string;
+  subtitle: string;
+  description: string;
+  dir: string;
+  width: number;
+  height: number;
+}
+
+const createVueFiles = async ({
+  title,
+  subtitle,
+  description,
+  dir,
+  width,
+  height,
+}: CreateVueFilesInputInterface): Promise<Either<string, string[]>> => {
+  const files = [
+    {
+      name: 'package.json',
+      contents: PACKAGE_JSON({
+        title,
+        subtitle,
+        type: 'vue',
+        description,
+        width,
+        height,
+      }),
+    },
+    {
+      name: 'Widget.vue',
+      contents: WIDGET_VUE(),
+    },
+    {
+      name: 'index.js',
+      contents: INDEX_VUE(),
+    },
+    {
+      name: 'index.html',
+      contents: INDEX_HTML({ type: 'vue' }),
+    },
+  ];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fileWrites: Promise<Either<any, any>>[] = [];
+
+  files.forEach(file => {
+    fileWrites.push(
+      (async (): Promise<Either<string, string>> => {
+        const pathToWriteTo = path.resolve(dir, file.name);
+
+        const [fileWriteError]: [Error, undefined] = await catchify(
+          fs.outputFile(pathToWriteTo, file.contents),
+        );
+
+        if (fileWriteError) {
+          return left(`Could not write to ${pathToWriteTo}`);
+        }
+
+        return right(pathToWriteTo);
+      })(),
+    );
+  });
+
+  const [filesWriteError, filesWritten]: [
+    Error,
+    Either<string, string>[],
+  ] = await catchify(Promise.all(fileWrites));
+
+  if (filesWriteError) {
+    return left('Something went wrong while writing the files.');
+  }
+
+  const filesWrittenLeft = filesWritten.find(fileWritten =>
+    isLeft(fileWritten),
+  );
+
+  if (filesWrittenLeft) {
+    return filesWrittenLeft as Left<string>;
+  }
+
+  // Looks like all files were successfully written
+  return right(
+    filesWritten.map(fileWritten =>
+      fold(
+        (x: string): string => x,
+        (x: string): string => x,
+      )(fileWritten),
+    ),
+  );
+};
+
+interface CreateReactFilesInputInterface {
+  title: string;
+  subtitle: string;
+  description: string;
+  dir: string;
+  width: number;
+  height: number;
+}
+
+const createReactFiles = async ({
+  title,
+  subtitle,
+  description,
+  dir,
+  width,
+  height,
+}: CreateReactFilesInputInterface): Promise<Either<string, string[]>> => {
+  const files = [
+    {
+      name: 'package.json',
+      contents: PACKAGE_JSON({
+        title,
+        subtitle,
+        type: 'react',
+        description,
+        width,
+        height,
+      }),
+    },
+    {
+      name: 'Widget.jsx',
+      contents: WIDGET_REACT(),
+    },
+    {
+      name: 'index.jsx',
+      contents: INDEX_REACT(),
+    },
+    {
+      name: 'index.html',
+      contents: INDEX_HTML({ type: 'react' }),
+    },
+    {
+      name: 'widget.css',
+      contents: CSS_REACT(),
+    },
+  ];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fileWrites: Promise<Either<any, any>>[] = [];
+
+  files.forEach(file => {
+    fileWrites.push(
+      (async (): Promise<Either<string, string>> => {
+        const pathToWriteTo = path.resolve(dir, file.name);
+
+        const [fileWriteError]: [Error, undefined] = await catchify(
+          fs.outputFile(pathToWriteTo, file.contents),
+        );
+
+        if (fileWriteError) {
+          return left(`Could not write to ${pathToWriteTo}`);
+        }
+        return right(pathToWriteTo);
+      })(),
+    );
+  });
+
+  const [filesWriteError, filesWritten]: [
+    Error,
+    Either<string, string>[],
+  ] = await catchify(Promise.all(fileWrites));
+
+  if (filesWriteError) {
+    return left('Something went wrong while writing the files.');
+  }
+
+  const filesWrittenLeft = filesWritten.find(fileWritten =>
+    isLeft(fileWritten),
+  );
+
+  if (filesWrittenLeft) {
+    return filesWrittenLeft as Left<string>;
+  }
+
+  // Looks like all files were successfully written
+  return right(
+    filesWritten.map(fileWritten =>
+      fold(
+        (x: string): string => x,
+        (x: string): string => x,
+      )(fileWritten),
+    ),
+  );
+};
+
+interface CreateFilesInputInterface {
   title: string;
   subtitle?: string;
   type: 'vue' | 'react';
   description?: string;
   dir: string;
-  active: boolean;
   width: number;
   height: number;
 }
@@ -29,10 +213,9 @@ export const createFiles = async ({
   type,
   description = '',
   dir,
-  active,
   width,
   height,
-}: ICreateFilesInput): Promise<Either<
+}: CreateFilesInputInterface): Promise<Either<
   string,
   { files: string[]; dir: string }
 >> => {
@@ -73,7 +256,6 @@ export const createFiles = async ({
             subtitle,
             description,
             dir: finalDir,
-            active,
             width,
             height,
           }),
@@ -84,7 +266,6 @@ export const createFiles = async ({
             subtitle,
             description,
             dir: finalDir,
-            active,
             width,
             height,
           }),
@@ -102,193 +283,4 @@ export const createFiles = async ({
     files: filesWritten.right,
     dir: finalDir,
   });
-};
-
-interface ICreateVueFilesInput {
-  title: string;
-  subtitle: string;
-  description: string;
-  dir: string;
-  active: boolean;
-  width: number;
-  height: number;
-}
-
-const createVueFiles = async ({
-  title,
-  subtitle,
-  description,
-  dir,
-  active,
-  width,
-  height,
-}: ICreateVueFilesInput): Promise<Either<string, string[]>> => {
-  const files = [
-    {
-      name: 'package.json',
-      contents: PACKAGE_JSON({
-        title,
-        subtitle,
-        type: 'vue',
-        description,
-        active,
-        width,
-        height,
-      }),
-    },
-    {
-      name: 'Widget.vue',
-      contents: WIDGET_VUE(),
-    },
-    {
-      name: 'index.js',
-      contents: INDEX_VUE(),
-    },
-    {
-      name: 'index.html',
-      contents: INDEX_HTML({ type: 'vue' }),
-    },
-  ];
-  const fileWrites: Promise<Either<any, any>>[] = [];
-
-  files.forEach(file => {
-    fileWrites.push(
-      (async (): Promise<Either<string, string>> => {
-        const pathToWriteTo = path.resolve(dir, file.name);
-
-        const [fileWriteError]: [Error, undefined] = await catchify(
-          fs.outputFile(pathToWriteTo, file.contents),
-        );
-
-        if (fileWriteError) {
-          return left(`Could not write to ${pathToWriteTo}`);
-        }
-
-        return right(pathToWriteTo);
-      })(),
-    );
-  });
-
-  const [filesWriteError, filesWritten]: [
-    Error,
-    Either<string, string>[],
-  ] = await catchify(Promise.all(fileWrites));
-
-  if (filesWriteError) {
-    return left('Something went wrong while writing the files.');
-  }
-
-  const filesWrittenLeft = filesWritten.find(fileWritten =>
-    isLeft(fileWritten),
-  );
-
-  if (filesWrittenLeft) {
-    return filesWrittenLeft as Left<string>;
-  }
-
-  // Looks like all files were successfully written
-  return right(
-    filesWritten.map(fileWritten =>
-      fold(
-        (x: string): string => x,
-        (x: string): string => x,
-      )(fileWritten),
-    ),
-  );
-};
-
-interface ICreateReactFilesInput {
-  title: string;
-  subtitle: string;
-  description: string;
-  dir: string;
-  active: boolean;
-  width: number;
-  height: number;
-}
-
-const createReactFiles = async ({
-  title,
-  subtitle,
-  description,
-  dir,
-  active,
-  width,
-  height,
-}: ICreateReactFilesInput): Promise<Either<string, string[]>> => {
-  const files = [
-    {
-      name: 'package.json',
-      contents: PACKAGE_JSON({
-        title,
-        subtitle,
-        type: 'react',
-        description,
-        active,
-        width,
-        height,
-      }),
-    },
-    {
-      name: 'Widget.jsx',
-      contents: WIDGET_REACT(),
-    },
-    {
-      name: 'index.jsx',
-      contents: INDEX_REACT(),
-    },
-    {
-      name: 'index.html',
-      contents: INDEX_HTML({ type: 'react' }),
-    },
-    {
-      name: 'widget.css',
-      contents: CSS_REACT(),
-    },
-  ];
-  const fileWrites: Promise<Either<any, any>>[] = [];
-
-  files.forEach(file => {
-    fileWrites.push(
-      (async (): Promise<Either<string, string>> => {
-        const pathToWriteTo = path.resolve(dir, file.name);
-
-        const [fileWriteError]: [Error, undefined] = await catchify(
-          fs.outputFile(pathToWriteTo, file.contents),
-        );
-
-        if (fileWriteError) {
-          return left(`Could not write to ${pathToWriteTo}`);
-        }
-        return right(pathToWriteTo);
-      })(),
-    );
-  });
-
-  const [filesWriteError, filesWritten]: [
-    Error,
-    Either<string, string>[],
-  ] = await catchify(Promise.all(fileWrites));
-
-  if (filesWriteError) {
-    return left('Something went wrong while writing the files.');
-  }
-
-  const filesWrittenLeft = filesWritten.find(fileWritten =>
-    isLeft(fileWritten),
-  );
-
-  if (filesWrittenLeft) {
-    return filesWrittenLeft as Left<string>;
-  }
-
-  // Looks like all files were successfully written
-  return right(
-    filesWritten.map(fileWritten =>
-      fold(
-        (x: string): string => x,
-        (x: string): string => x,
-      )(fileWritten),
-    ),
-  );
 };

@@ -10,15 +10,18 @@ export const listDevelopmentWidgetsInstances = async (): Promise<typeof Developm
 export const addDevelopmentWidgetInstance = async ({
   widgetId,
   displayId,
+  settings,
 }: {
   widgetId: string;
   displayId: number;
+  settings: { [key: string]: string | number };
 }): Promise<{ success: boolean; message?: string }> => {
   return await ipcRenderer.invoke(
     'api/widgetInstantiator/addDevelopmentWidgetInstance',
     {
       widgetId,
       displayId,
+      settings,
     },
   );
 };
@@ -49,6 +52,22 @@ export const setDevelopmentWidgetInstancePosition = async ({
     {
       id,
       position,
+    },
+  );
+};
+
+export const setDevelopmentWidgetInstanceSettings = async ({
+  id,
+  settings,
+}: {
+  id: string;
+  settings: { [key: string]: string | number };
+}): Promise<{ success: boolean; message?: string }> => {
+  return await ipcRenderer.invoke(
+    'api/widgetInstantiator/setDevelopmentWidgetInstanceSettings',
+    {
+      id,
+      settings,
     },
   );
 };

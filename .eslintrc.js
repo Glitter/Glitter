@@ -30,7 +30,7 @@ module.exports = {
     'import/no-unresolved': 'off',
     'no-mixed-operators': 'off',
     strict: 0,
-    'function-paren-newline': ['error', 'consistent'],
+    'function-paren-newline': 'off',
     'comma-dangle': [
       'error',
       {

@@ -1,20 +1,15 @@
 import store from '@appStore/development';
 import { Either, left, right } from 'fp-ts/lib/Either';
 
-interface SetDevelopmentWidgetInstancePositionInputInterface {
+interface SetDevelopmentWidgetInstanceSettingsInputInterface {
   id: string;
-  position: {
-    top?: number;
-    right?: number;
-    bottom?: number;
-    left?: number;
-  };
+  settings: { [key: string]: string | number };
 }
 
-export const setDevelopmentWidgetInstancePosition = async ({
+export const setDevelopmentWidgetInstanceSettings = async ({
   id,
-  position,
-}: SetDevelopmentWidgetInstancePositionInputInterface): Promise<Either<
+  settings,
+}: SetDevelopmentWidgetInstanceSettingsInputInterface): Promise<Either<
   string,
   string
 >> => {
@@ -26,9 +21,9 @@ export const setDevelopmentWidgetInstancePosition = async ({
     return left('Could not find a widget instance, please try again');
   }
 
-  store.setWidgetInstancePosition({
+  store.setWidgetInstanceSettings({
     id,
-    position,
+    settings,
   });
 
   return right('Widget instance successfully updated');

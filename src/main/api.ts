@@ -13,7 +13,5 @@ export const api = ({
   initWidgetCreatorApi({
     uiWindow,
   });
-  initWidgetInstantiatorApi({
-    uiWindow,
-  });
+  initWidgetInstantiatorApi();
 };

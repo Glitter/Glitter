@@ -40,3 +40,4 @@ svgs-embed
 .webpack
 out
 plugins
+build

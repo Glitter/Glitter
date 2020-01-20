@@ -1,8 +1,39 @@
 /* eslint-disable no-param-reassign */
-import { types } from 'mobx-state-tree';
+import { types, cast } from 'mobx-state-tree';
 import catchify from 'catchify';
 import uuid from 'uuid/v4';
 import persist from '@appStore/persist';
+
+const DevelopmentWidgetSettingsField = types.model({
+  name: types.string,
+  type: types.string,
+  label: types.string,
+  description: types.optional(types.string, ''),
+  multiline: types.optional(types.boolean, false),
+  inputType: types.optional(
+    types.union(
+      types.literal('text'),
+      types.literal('number'),
+      types.literal('email'),
+      types.literal('tel'),
+      types.literal('color'),
+      types.literal('date'),
+      types.literal('password'),
+      types.literal('time'),
+      types.literal('url'),
+    ),
+    'text',
+  ),
+  size: types.optional(
+    types.union(
+      types.literal('small'),
+      types.literal('medium'),
+      types.literal('large'),
+    ),
+    'large',
+  ),
+  required: types.optional(types.boolean, false),
+});
 
 export const DevelopmentWidgetConfig = types.model({
   title: types.string,
@@ -13,6 +44,7 @@ export const DevelopmentWidgetConfig = types.model({
   active: types.boolean,
   width: types.number,
   height: types.number,
+  settings: types.array(DevelopmentWidgetSettingsField),
 });
 
 export const DevelopmentWidget = types.model({
@@ -21,6 +53,13 @@ export const DevelopmentWidget = types.model({
   id: types.optional(types.identifier, uuid),
   securityScopedBookmark: types.maybe(types.string),
 });
+
+export const DevelopmentWidgetInstanceSettings = types.array(
+  types.model({
+    name: types.string,
+    value: types.union(types.number, types.string),
+  }),
+);
 
 export const DevelopmentWidgetInstance = types.model({
   id: types.string,
@@ -32,6 +71,7 @@ export const DevelopmentWidgetInstance = types.model({
     bottom: types.maybe(types.number),
     left: types.maybe(types.number),
   }),
+  settings: DevelopmentWidgetInstanceSettings,
 });
 
 const DevelopmentWidgetsInstances = types.array(DevelopmentWidgetInstance);
@@ -46,11 +86,13 @@ export const Store = types
       widgetId,
       displayId,
       id,
+      settings,
     }: {
       widgetId: string;
       displayId: number;
       id: string;
-    }) => {
+      settings: { [key: string]: string | number };
+    }): void => {
       self.widgetsInstances.push({
         id,
         widget: widgetId,
@@ -61,9 +103,23 @@ export const Store = types
           bottom: undefined,
           left: 0,
         },
+        settings: cast(
+          Object.keys(settings).reduce(
+            (
+              acc: { name: string; value: string | number }[],
+              curr,
+            ): {
+              name: string;
+              value: string | number;
+            }[] => {
+              return [...acc, { name: curr, value: settings[curr] }];
+            },
+            [],
+          ),
+        ),
       });
     };
-    const removeWidgetInstance = (id: string) => {
+    const removeWidgetInstance = (id: string): void => {
       const widgetInstanceIndex = self.widgetsInstances.findIndex(
         widgetInstance => widgetInstance.id === id,
       );
@@ -85,7 +141,7 @@ export const Store = types
         bottom?: number;
         left?: number;
       };
-    }) => {
+    }): void => {
       const widgetInstanceIndex = self.widgetsInstances.findIndex(
         widgetInstance => widgetInstance.id === id,
       );
@@ -101,7 +157,37 @@ export const Store = types
         left,
       };
     };
-    const addWidget = (widget: typeof DevelopmentWidget.Type) => {
+    const setWidgetInstanceSettings = ({
+      id,
+      settings,
+    }: {
+      id: string;
+      settings: { [key: string]: string | number };
+    }): void => {
+      const widgetInstanceIndex = self.widgetsInstances.findIndex(
+        widgetInstance => widgetInstance.id === id,
+      );
+
+      if (widgetInstanceIndex === -1) {
+        return;
+      }
+
+      self.widgetsInstances[widgetInstanceIndex].settings = cast(
+        Object.keys(settings).reduce(
+          (
+            acc: { name: string; value: string | number }[],
+            curr,
+          ): {
+            name: string;
+            value: string | number;
+          }[] => {
+            return [...acc, { name: curr, value: settings[curr] }];
+          },
+          [],
+        ),
+      );
+    };
+    const addWidget = (widget: typeof DevelopmentWidget.Type): void => {
       self.widgets.push(widget);
     };
     const updateWidgetConfig = ({
@@ -110,7 +196,7 @@ export const Store = types
     }: {
       id: string;
       config: typeof DevelopmentWidgetConfig.Type;
-    }) => {
+    }): void => {
       const widgetIndex = self.widgets.findIndex(widget => widget.id === id);
 
       if (widgetIndex === -1) {
@@ -119,7 +205,7 @@ export const Store = types
 
       self.widgets[widgetIndex].config = config;
     };
-    const removeWidget = (id: string) => {
+    const removeWidget = (id: string): void => {
       const widgetIndex = self.widgets.findIndex(widget => widget.id === id);
 
       if (widgetIndex === -1) {
@@ -144,7 +230,7 @@ export const Store = types
     }: {
       id: string;
       active: boolean;
-    }) => {
+    }): void => {
       const widgetIndex = self.widgets.findIndex(widget => widget.id === id);
 
       if (widgetIndex === -1) {
@@ -159,6 +245,7 @@ export const Store = types
       updateWidgetConfig,
       removeWidgetInstance,
       setWidgetInstancePosition,
+      setWidgetInstanceSettings,
       addWidget,
       removeWidget,
       toggleWidgetActive,

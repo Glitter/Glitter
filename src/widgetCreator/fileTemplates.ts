@@ -1,11 +1,10 @@
 import { slug as generateSlug } from 'slug-gen';
 
-interface IPackageJsonInput {
+interface PackageJsonInputInterface {
   title: string;
   subtitle: string;
   type: 'vue' | 'react';
   description: string;
-  active: boolean;
   width: number;
   height: number;
 }
@@ -15,10 +14,9 @@ export const PACKAGE_JSON = ({
   subtitle,
   type,
   description,
-  active,
   width,
   height,
-}: IPackageJsonInput): string => {
+}: PackageJsonInputInterface): string => {
   const widgetPackage = {
     glitter: {
       title,
@@ -27,9 +25,16 @@ export const PACKAGE_JSON = ({
       description,
       version: '1.0.0',
       type,
-      active,
       width,
       height,
+      settings: [
+        {
+          name: 'firstName',
+          type: 'text',
+          label: 'First Name',
+          required: true,
+        },
+      ],
     },
   };
 
@@ -39,7 +44,7 @@ export const PACKAGE_JSON = ({
 export const WIDGET_VUE = (): string => {
   return `<template>
   <div class="widget">
-    Welcome to Glitter. I am your new widget :)
+    Welcome to Glitter, {{ settings.firstName }}. I am your new widget :)
   </div>
 </template>
 
@@ -47,7 +52,13 @@ export const WIDGET_VUE = (): string => {
 import 'normalize.css';
 
 export default {
-  name: 'HelloWorldWidget'
+  name: 'HelloWorldWidget',
+  props: {
+    settings: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
 };
 </script>
 
@@ -75,12 +86,16 @@ export const INDEX_VUE = (): string => {
   return `import Vue from 'vue/dist/vue.common.js';
 import Widget from './Widget.vue';
 
-const App = new Vue({
-  el: '#app',
-  components: {
-    Widget,
-  },
-  template: '<Widget/>',
+window.addEventListener('GlitterReady', e => {
+  const WidgetClass = Vue.extend(Widget);
+  const widget = new WidgetClass({
+    el: '#app',
+    propsData: {
+      settings: e.detail.settings,
+    },
+  });
+
+  widget.$mount();
 });
 `;
 };
@@ -90,10 +105,10 @@ export const WIDGET_REACT = (): string => {
 import 'normalize.css';
 import './widget.css';
 
-const Widget = () => {
+const Widget = ({ settings }) => {
   return (
     <div className="widget">
-      Welcome to Glitter. I am your new widget :)
+      Welcome to Glitter, {settings.firstName}. I am your new widget :)
     </div>
   );
 };
@@ -121,15 +136,20 @@ export const CSS_REACT = (): string => {
 
 export const INDEX_REACT = (): string => {
   return `import React from 'react';
-import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom';
 import 'normalize.css';
 import Widget from './Widget.jsx';
 
-const App = () => {
-  return <Widget/>
-}
+const App = ({ settings }) => {
+  return <Widget settings={settings} />;
+};
 
-ReactDOM.render(<App />, document.getElementById('app'));
+window.addEventListener('GlitterReady', e => {
+  ReactDOM.render(
+    <App settings={e.detail.settings} />,
+    document.getElementById('app'),
+  );
+});
 `;
 };
 

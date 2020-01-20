@@ -1,8 +1,9 @@
 // Based on https://github.com/sindresorhus/fix-path, modified to run on linux as well
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const shellPath = require('shell-path');
 
-export default function() {
+export default function(): void {
   if (['darwin', 'linux'].includes(process.platform) === false) {
     return;
   }

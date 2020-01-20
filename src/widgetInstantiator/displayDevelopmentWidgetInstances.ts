@@ -7,39 +7,18 @@ import { getUiWindow } from '@main/uiWindow';
 
 export const aliveWidgetsInstances = new Map<string, BrowserWindow>();
 
-const initWidgetsInstances = () => {
-  const displays = screen.getAllDisplays();
-
-  store.widgetsInstances.forEach(widgetInstance => {
-    const display = displays.find(({ id }) => widgetInstance.displayId === id);
-
-    if (display === undefined) {
-      if (widgetInstanceIsAlive(widgetInstance.id)) {
-        // Looks like the screen is gone, let's remove the widget instance
-        destroyWidgetInstance(widgetInstance.id);
-      }
-
-      return;
-    }
-
-    if (widgetInstanceIsAlive(widgetInstance.id)) {
-      // Widget instance is already alive, nothing to do here
-      return;
-    }
-
-    createWidgetInstance({ widgetInstance, display });
-  });
-};
-
-const widgetInstanceIsAlive = (widgetInstanceId: string) => {
+const widgetInstanceIsAlive = (widgetInstanceId: string): boolean => {
   return aliveWidgetsInstances.get(widgetInstanceId) !== undefined;
 };
 
-export const destroyWidgetInstance = (widgetInstanceId: string) => {
+export const destroyWidgetInstance = (widgetInstanceId: string): void => {
   const widgetInstanceWindow = aliveWidgetsInstances.get(widgetInstanceId);
 
-  widgetInstanceWindow!.destroy();
-  aliveWidgetsInstances.delete(widgetInstanceId);
+  if (widgetInstanceWindow === undefined) {
+    return;
+  }
+
+  widgetInstanceWindow.destroy();
 };
 
 const calculateWidgetInstanceCoordinates = ({
@@ -48,7 +27,7 @@ const calculateWidgetInstanceCoordinates = ({
 }: {
   widgetInstance: typeof DevelopmentWidgetInstance.Type;
   display: Display;
-}) => {
+}): { x: number; y: number } => {
   const realScreenX =
     widgetInstance.position.left !== undefined
       ? widgetInstance.position.left
@@ -74,7 +53,7 @@ const createWidgetInstance = ({
 }: {
   widgetInstance: typeof DevelopmentWidgetInstance.Type;
   display: Display;
-}) => {
+}): void => {
   const widgetHtml = urlFormat.format({
     protocol: 'file',
     slashes: true,
@@ -109,7 +88,39 @@ const createWidgetInstance = ({
 
   // and load the index.html of the app.
   widgetWindow.loadURL(widgetHtml);
+
+  widgetWindow.webContents.on('dom-ready', (): void => {
+    // We need to expose widget instance settings to the BrowserWindow
+    const settings =
+      widgetInstance.settings.reduce((acc, cur) => {
+        return {
+          ...acc,
+          [cur.name]: cur.value,
+        };
+      }, {}) || {};
+    const jsCode = `
+      globalThis.Glitter = {
+        currentWidget: {
+          getSettings() {
+            return ${JSON.stringify(settings)};
+          },
+        },
+      };
+
+      globalThis.dispatchEvent(new CustomEvent('GlitterReady', {
+        detail: {
+          Glitter: globalThis.Glitter,
+          settings: globalThis.Glitter.currentWidget.getSettings(),
+        }
+      }));
+    `;
+
+    widgetWindow.webContents.executeJavaScript(jsCode);
+  });
+
   widgetWindow.blur();
+
+  getUiWindow().focus();
 
   widgetWindow.excludedFromShownWindowsMenu = true;
 
@@ -127,7 +138,31 @@ const createWidgetInstance = ({
   aliveWidgetsInstances.set(widgetInstance.id, widgetWindow);
 };
 
-const repositionWidgetsInstances = () => {
+const initWidgetsInstances = (): void => {
+  const displays = screen.getAllDisplays();
+
+  store.widgetsInstances.forEach((widgetInstance): void => {
+    const display = displays.find(({ id }) => widgetInstance.displayId === id);
+
+    if (display === undefined) {
+      if (widgetInstanceIsAlive(widgetInstance.id)) {
+        // Looks like the screen is gone, let's remove the widget instance
+        destroyWidgetInstance(widgetInstance.id);
+      }
+
+      return;
+    }
+
+    if (widgetInstanceIsAlive(widgetInstance.id)) {
+      // Widget instance is already alive, nothing to do here
+      return;
+    }
+
+    createWidgetInstance({ widgetInstance, display });
+  });
+};
+
+const repositionWidgetsInstances = (): void => {
   const displays = screen.getAllDisplays();
 
   aliveWidgetsInstances.forEach((widgetWindow, widgetInstanceId) => {
@@ -159,7 +194,7 @@ const repositionWidgetsInstances = () => {
   });
 };
 
-export const init = () => {
+export const init = (): void => {
   initWidgetsInstances();
 
   screen.on('display-added', initWidgetsInstances);
@@ -209,6 +244,23 @@ export const init = () => {
     widgetInstances.forEach(widgetInstance => {
       destroyWidgetInstance(widgetInstance.id);
     });
+
+    process.nextTick(initWidgetsInstances);
+  });
+
+  // Reload widget instances on widget instance settings update
+  onAction(store, ({ name, args }) => {
+    if (name !== 'setWidgetInstanceSettings' || args === undefined) {
+      return;
+    }
+
+    const [{ id }] = args as [{ id: string }];
+
+    if (widgetInstanceIsAlive(id) === false) {
+      return;
+    }
+
+    destroyWidgetInstance(id);
 
     process.nextTick(initWidgetsInstances);
   });

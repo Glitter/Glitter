@@ -5,61 +5,6 @@ import { Either, left, right, isLeft } from 'fp-ts/lib/Either';
 import semver from 'semver';
 import { DevelopmentWidgetConfig } from '@appStore/development';
 
-interface IVerifyDevelopmentWidgetInput {
-  dir: string;
-}
-
-interface IConfigObject {
-  glitter: typeof DevelopmentWidgetConfig.Type;
-  [x: string]: any;
-}
-
-export const verifyDevelopmentWidget = async ({
-  dir,
-}: IVerifyDevelopmentWidgetInput): Promise<Either<
-  string,
-  typeof DevelopmentWidgetConfig.Type
->> => {
-  // Check if directory exists
-  const [pathExistsError]: [Error, undefined] = await catchify(
-    fs.pathExists(dir),
-  );
-
-  if (pathExistsError) {
-    return left(`Could not read a directory ${dir}`);
-  }
-
-  // Make sure package.json exists
-  const configPath = path.resolve(dir, 'package.json');
-  const [configExistsError, configExists]: [Error, boolean] = await catchify(
-    fs.pathExists(configPath),
-  );
-
-  if (configExistsError || !configExists) {
-    return left(`Could not read ${configPath}`);
-  }
-
-  const [configReadError, config]: [Error, IConfigObject] = await catchify(
-    fs.readJson(configPath),
-  );
-
-  if (configReadError) {
-    return left(`Could not read ${configPath}`);
-  }
-
-  if (typeof config.glitter !== 'object') {
-    return left(`glitter key missing or not an object`);
-  }
-
-  const configValidationResult = verifyConfigObject(config.glitter);
-
-  if (isLeft(configValidationResult)) {
-    return configValidationResult;
-  }
-
-  return right(config.glitter);
-};
-
 const TITLE_MAX_LENGTH = 72;
 const ALLOWED_TYPES = ['vue', 'react'];
 
@@ -154,4 +99,61 @@ const verifyConfigObject = (
   }
 
   return right('Config (package.json) validated successfully.');
+};
+
+interface VerifyDevelopmentWidgetInputInterface {
+  dir: string;
+}
+
+interface ConfigObjectInterface {
+  glitter: typeof DevelopmentWidgetConfig.Type;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [x: string]: any;
+}
+
+export const verifyDevelopmentWidget = async ({
+  dir,
+}: VerifyDevelopmentWidgetInputInterface): Promise<Either<
+  string,
+  typeof DevelopmentWidgetConfig.Type
+>> => {
+  // Check if directory exists
+  const [pathExistsError]: [Error, undefined] = await catchify(
+    fs.pathExists(dir),
+  );
+
+  if (pathExistsError) {
+    return left(`Could not read a directory ${dir}`);
+  }
+
+  // Make sure package.json exists
+  const configPath = path.resolve(dir, 'package.json');
+  const [configExistsError, configExists]: [Error, boolean] = await catchify(
+    fs.pathExists(configPath),
+  );
+
+  if (configExistsError || !configExists) {
+    return left(`Could not read ${configPath}`);
+  }
+
+  const [configReadError, config]: [
+    Error,
+    ConfigObjectInterface,
+  ] = await catchify(fs.readJson(configPath));
+
+  if (configReadError) {
+    return left(`Could not read ${configPath}`);
+  }
+
+  if (typeof config.glitter !== 'object') {
+    return left(`glitter key missing or not an object`);
+  }
+
+  const configValidationResult = verifyConfigObject(config.glitter);
+
+  if (isLeft(configValidationResult)) {
+    return configValidationResult;
+  }
+
+  return right(config.glitter);
 };

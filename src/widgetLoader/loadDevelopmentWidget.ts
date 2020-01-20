@@ -1,11 +1,12 @@
 import catchify from 'catchify';
 import uuid from 'uuid/v4';
+import { cast } from 'mobx-state-tree';
 import store, { DevelopmentWidgetConfig } from '@appStore/development';
 import { verifyDevelopmentWidget } from '@widgetLoader/verifyDevelopmentWidget';
 import { Either, left, right, isLeft } from 'fp-ts/lib/Either';
 import { startParcelWatcher } from '@widgetLoader/parcel';
 
-interface ILoadDevelopmentWidgetInput {
+interface LoadDevelopmentWidgetInputInterface {
   dir: string;
   securityScopedBookmark?: string;
 }
@@ -13,7 +14,7 @@ interface ILoadDevelopmentWidgetInput {
 export const loadDevelopmentWidget = async ({
   dir,
   securityScopedBookmark,
-}: ILoadDevelopmentWidgetInput): Promise<Either<string, string>> => {
+}: LoadDevelopmentWidgetInputInterface): Promise<Either<string, string>> => {
   const [verifyWidgetError, verifyWidgetResult]: [
     Error,
     Either<string, typeof DevelopmentWidgetConfig.Type>,
@@ -33,7 +34,14 @@ export const loadDevelopmentWidget = async ({
 
   if (existingWidget !== undefined) {
     // This widget is already loaded, we only reload the config
-    store.updateWidgetConfig({ id: existingWidget.id, config: widgetConfig });
+    if (widgetConfig.settings === undefined) {
+      widgetConfig.settings = cast([]);
+    }
+
+    store.updateWidgetConfig({
+      id: existingWidget.id,
+      config: { ...existingWidget.config, ...widgetConfig },
+    });
     return right('Widget successfully updated');
   }
 

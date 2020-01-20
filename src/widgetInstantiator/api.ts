@@ -6,13 +6,10 @@ import { addDevelopmentWidgetInstance } from '@widgetInstantiator/addDevelopment
 import { removeDevelopmentWidgetInstance } from '@widgetInstantiator/removeDevelopmentWidgetInstance';
 import { listDevelopmentWidgetsInstances } from '@widgetInstantiator/listDevelopmentWidgetsInstances';
 import { setDevelopmentWidgetInstancePosition } from '@widgetInstantiator/setDevelopmentWidgetInstancePosition';
+import { setDevelopmentWidgetInstanceSettings } from '@widgetInstantiator/setDevelopmentWidgetInstanceSettings';
 import { DevelopmentWidgetInstance } from '@appStore/development';
 
-export const api = ({
-  uiWindow,
-}: {
-  uiWindow: Electron.BrowserWindow | null;
-}): void => {
+export const api = (): void => {
   ipcMain.handle(
     'api/widgetInstantiator/listDevelopmentWidgetsInstances',
     async () => {
@@ -33,13 +30,21 @@ export const api = ({
     'api/widgetInstantiator/addDevelopmentWidgetInstance',
     async (
       _event,
-      { widgetId, displayId }: { widgetId: string; displayId: number },
+      {
+        widgetId,
+        displayId,
+        settings,
+      }: {
+        widgetId: string;
+        displayId: number;
+        settings: { [key: string]: string | number };
+      },
     ) => {
       const [
         developmentWidgetInstanceAddedError,
         developmentWidgetInstanceAdded,
       ]: [Error, Either<string, string>] = await catchify(
-        addDevelopmentWidgetInstance({ widgetId, displayId }),
+        addDevelopmentWidgetInstance({ widgetId, displayId, settings }),
       );
 
       if (developmentWidgetInstanceAddedError) {
@@ -130,6 +135,44 @@ export const api = ({
           success: true,
         }),
       )(positionSet);
+    },
+  );
+
+  ipcMain.handle(
+    'api/widgetInstantiator/setDevelopmentWidgetInstanceSettings',
+    async (
+      _event,
+      {
+        id,
+        settings,
+      }: {
+        id: string;
+        settings: { [key: string]: string | number };
+      },
+    ) => {
+      const [settingsSetError, settingsSet]: [
+        Error,
+        Either<string, string>,
+      ] = await catchify(
+        setDevelopmentWidgetInstanceSettings({ id, settings }),
+      );
+
+      if (settingsSetError) {
+        return {
+          success: false,
+          message: settingsSetError.message,
+        };
+      }
+
+      return fold(
+        errorMessage => ({
+          success: false,
+          message: errorMessage,
+        }),
+        () => ({
+          success: true,
+        }),
+      )(settingsSet);
     },
   );
 };
