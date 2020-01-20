@@ -1,4 +1,4 @@
-module.exports = [
+const rules = [
   // Add support for native node modules
   {
     test: /\.node$/,
@@ -14,12 +14,6 @@ module.exports = [
   //     },
   //   },
   // },
-  {
-    enforce: 'pre',
-    test: /\.(js|jsx|ts|tsx)$/,
-    exclude: /node_modules/,
-    loader: 'eslint-loader',
-  },
   {
     test: /\.(js|jsx)$/,
     exclude: /node_modules/,
@@ -49,3 +43,14 @@ module.exports = [
     ],
   },
 ];
+
+if (!process.env.GITHUB_TOKEN) {
+  rules.push({
+    enforce: 'pre',
+    test: /\.(js|jsx|ts|tsx)$/,
+    exclude: /node_modules/,
+    loader: 'eslint-loader',
+  });
+}
+
+module.exports = rules;
