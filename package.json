@@ -1,7 +1,7 @@
 {
   "name": "Glitter",
   "productName": "Glitter",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A beautiful desktop that you enjoy interacting with",
   "main": ".webpack/main",
   "scripts": {
