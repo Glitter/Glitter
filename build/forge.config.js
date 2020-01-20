@@ -49,8 +49,8 @@ module.exports = {
       config: {
         authToken: process.env.GITHUB_TOKEN,
         repository: {
-          owner: 'OriginalEXE',
-          name: 'Glitter-App',
+          owner: 'Glitter',
+          name: 'Glitter',
         },
       },
     },
