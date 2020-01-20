@@ -3,6 +3,38 @@ import { types, cast } from 'mobx-state-tree';
 import catchify from 'catchify';
 import uuid from 'uuid/v4';
 import persist from '@appStore/persist';
+import { snapshotProcessor } from 'mobx-state-tree/dist/internal';
+
+const DevelopmentWidgetSettingsField = types.model({
+  name: types.string,
+  type: types.string,
+  label: types.string,
+  description: types.optional(types.string, ''),
+  multiline: types.optional(types.boolean, false),
+  inputType: types.optional(
+    types.union(
+      types.literal('text'),
+      types.literal('number'),
+      types.literal('email'),
+      types.literal('tel'),
+      types.literal('color'),
+      types.literal('date'),
+      types.literal('password'),
+      types.literal('time'),
+      types.literal('url'),
+    ),
+    'text',
+  ),
+  size: types.optional(
+    types.union(
+      types.literal('small'),
+      types.literal('medium'),
+      types.literal('large'),
+    ),
+    'large',
+  ),
+  required: types.optional(types.boolean, false),
+});
 
 const DevelopmentWidgetSettingsField = types.model({
   name: types.string,
@@ -258,7 +290,36 @@ export const store = Store.create({
 });
 
 export const init = async (): Promise<typeof Store.Type> => {
-  await catchify(persist({ name: 'development', store }));
+  await catchify(
+    persist({
+      name: 'development',
+      store,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      modifySnapshot(snapshot): any {
+        if (snapshot.widgets === undefined) {
+          return snapshot;
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return {
+          ...snapshot,
+          widgets: snapshot.widgets.map((widget: any) => {
+            if (widget.config.active !== undefined) {
+              return widget;
+            }
+
+            return {
+              ...widget,
+              config: {
+                ...widget.config,
+                active: true,
+              },
+            };
+          }),
+        };
+      },
+    }),
+  );
 
   return store;
 };

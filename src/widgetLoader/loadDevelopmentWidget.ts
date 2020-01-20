@@ -49,16 +49,17 @@ export const loadDevelopmentWidget = async ({
 
   store.addWidget({
     path: dir,
-    config: widgetConfig,
+    config: {
+      ...widgetConfig,
+      active: true,
+    },
     id: widgetId,
     securityScopedBookmark,
   });
 
-  if (widgetConfig.active === true) {
-    setTimeout(() => {
-      startParcelWatcher({ id: widgetId });
-    }, 2000);
-  }
+  setTimeout(() => {
+    startParcelWatcher({ id: widgetId });
+  }, 2000);
 
   return right('Widget successfully loaded');
 };
