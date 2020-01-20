@@ -9,9 +9,15 @@ type StrToAnyMap = { [key: string]: any };
 interface OptionsInterface {
   name: string;
   store: IStateTreeNode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  modifySnapshot?: (snapshot: any) => any;
 }
 
-const persist = ({ name, store }: OptionsInterface): Promise<void> => {
+const persist = ({
+  name,
+  store,
+  modifySnapshot = x => x,
+}: OptionsInterface): Promise<void> => {
   const storagePath = path.join(
     electron.app.getPath('userData'),
     `settings/${name}.json`,
@@ -28,7 +34,11 @@ const persist = ({ name, store }: OptionsInterface): Promise<void> => {
       return;
     }
 
-    applySnapshot(store, snapshot);
+    try {
+      applySnapshot(store, modifySnapshot(snapshot));
+    } catch (e) {
+      console.error(e);
+    }
   });
 };
 

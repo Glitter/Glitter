@@ -3,6 +3,7 @@ import { types, cast } from 'mobx-state-tree';
 import catchify from 'catchify';
 import uuid from 'uuid/v4';
 import persist from '@appStore/persist';
+import { snapshotProcessor } from 'mobx-state-tree/dist/internal';
 
 const DevelopmentWidgetSettingsField = types.model({
   name: types.string,
@@ -258,7 +259,36 @@ export const store = Store.create({
 });
 
 export const init = async (): Promise<typeof Store.Type> => {
-  await catchify(persist({ name: 'development', store }));
+  await catchify(
+    persist({
+      name: 'development',
+      store,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      modifySnapshot(snapshot): any {
+        if (snapshot.widgets === undefined) {
+          return snapshot;
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return {
+          ...snapshot,
+          widgets: snapshot.widgets.map((widget: any) => {
+            if (widget.config.active !== undefined) {
+              return widget;
+            }
+
+            return {
+              ...widget,
+              config: {
+                ...widget.config,
+                active: true,
+              },
+            };
+          }),
+        };
+      },
+    }),
+  );
 
   return store;
 };
