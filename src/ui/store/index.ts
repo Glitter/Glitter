@@ -50,6 +50,7 @@ const DevelopmentWidgetConfig = types.model({
   width: types.number,
   height: types.number,
   settings: types.array(DevelopmentWidgetSettingsField),
+  nodeIntegration: types.optional(types.boolean, false),
 });
 
 export const DevelopmentWidget = types.model({

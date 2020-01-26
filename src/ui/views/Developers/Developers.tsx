@@ -11,6 +11,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
+import Alert from '@material-ui/lab/Alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import DevelopmentWidget from '@ui/components/DevelopmentWidget/DevelopmentWidget';
@@ -25,9 +26,11 @@ import {
   showCreateDevelopmentWidgetFsDialog as apiShowCreateDevelopmentWidgetFsDialog,
   createDevelopmentWidget as apiCreateDevelopmentWidget,
 } from '@ui/api/widgetCreator';
+import theme from '@ui/css/theme';
 import { Notification } from '@ui/notifications/store';
 import { useStore as useNotificationsStore } from '@ui/notifications/hooks';
 import omit from '@utils/omit';
+import { getSpacing } from '@ui/css/utilities/spacing';
 import * as Styled from './Developers.css';
 
 const Developers: React.FC = observer(() => {
@@ -465,6 +468,17 @@ const Developers: React.FC = observer(() => {
                     validateField(fieldName);
                   }}
                 />
+                <Alert
+                  severity="info"
+                  style={{
+                    marginTop: getSpacing(32),
+                    backgroundColor: 'transparent',
+                    color: theme.palette.text.secondary,
+                  }}
+                >
+                  In the next step, you will be asked for a directory to save
+                  the widget files to
+                </Alert>
               </DialogContent>
             </>
           )}
@@ -484,7 +498,7 @@ const Developers: React.FC = observer(() => {
                 size="small"
                 onClick={createWidget}
               >
-                Create the widget
+                Save widget locally
               </Button>
             )}
           </DialogActions>
