@@ -65,8 +65,8 @@ const createWidgetInstance = ({
     display,
   });
 
-  // Create the browser window.
-  const widgetWindow = new BrowserWindow({
+  // Create a browser window
+  const widgetWindowConfiguration = {
     width: widgetInstance.widget.config.width,
     height: widgetInstance.widget.config.height,
     x,
@@ -80,7 +80,16 @@ const createWidgetInstance = ({
     resizable: false,
     title: '',
     backgroundColor: '#00FFFFFF',
-  });
+    webPreferences: {
+      nodeIntegration: false,
+    },
+  };
+
+  if (widgetInstance.widget.config.nodeIntegration === true) {
+    widgetWindowConfiguration.webPreferences.nodeIntegration = true;
+  }
+
+  const widgetWindow = new BrowserWindow(widgetWindowConfiguration);
 
   // skipTaskbar option is not working on Ubuntu when set in the initialization
   // options for some weird reason

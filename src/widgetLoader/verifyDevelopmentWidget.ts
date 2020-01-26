@@ -77,7 +77,7 @@ const verifyConfigObject = (
     );
   }
 
-  // Walidate dimensions
+  // Validate dimensions
   if (typeof config.width !== 'number') {
     return left(
       `width should be a number, found ${typeof config.width} instead`,
@@ -96,6 +96,16 @@ const verifyConfigObject = (
 
   if (config.height <= 0) {
     return left('height should be higher than 0');
+  }
+
+  // Validate node integration
+  if (
+    config.nodeIntegration !== undefined &&
+    typeof config.nodeIntegration !== 'boolean'
+  ) {
+    return left(
+      `nodeIntegration should be a boolean, found ${typeof config.nodeIntegration} instead`,
+    );
   }
 
   return right('Config (package.json) validated successfully.');
