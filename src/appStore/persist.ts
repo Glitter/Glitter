@@ -16,7 +16,7 @@ interface OptionsInterface {
 const persist = ({
   name,
   store,
-  modifySnapshot = x => x,
+  modifySnapshot = (x) => x,
 }: OptionsInterface): Promise<void> => {
   const storagePath = path.join(
     electron.app.getPath('userData'),
@@ -29,7 +29,7 @@ const persist = ({
     fs.outputJsonSync(storagePath, snapshot);
   });
 
-  return fs.readJson(storagePath).then(snapshot => {
+  return fs.readJson(storagePath).then((snapshot) => {
     if (!snapshot) {
       return;
     }

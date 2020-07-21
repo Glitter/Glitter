@@ -216,11 +216,7 @@ const DevelopmentWidget: React.FC<DevelopmentWidgetInterface> = observer(
             {logs.length > 0 && (
               <>
                 <Styled.Logs>
-                  {logs
-                    .slice()
-                    .reverse()
-                    .slice(0, 2)
-                    .join('\n')}
+                  {logs.slice().reverse().slice(0, 2).join('\n')}
                 </Styled.Logs>
                 <Styled.LogsSeeAll size="small" onClick={openLogsDialog}>
                   See full logs
@@ -240,11 +236,7 @@ const DevelopmentWidget: React.FC<DevelopmentWidgetInterface> = observer(
                   </Styled.LogsFullTitle>
                   <DialogContent>
                     <Styled.LogsFull>
-                      {logs
-                        .slice()
-                        .reverse()
-                        .slice(0, 200)
-                        .join('\n')}
+                      {logs.slice().reverse().slice(0, 200).join('\n')}
                     </Styled.LogsFull>
                   </DialogContent>
                 </Dialog>

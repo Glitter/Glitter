@@ -54,12 +54,6 @@ const createWidgetInstance = ({
   widgetInstance: typeof DevelopmentWidgetInstance.Type;
   display: Display;
 }): void => {
-  const widgetHtml = urlFormat.format({
-    protocol: 'file',
-    slashes: true,
-    pathname: path.resolve(widgetInstance.widget.path, './dist/index.html'),
-  });
-
   const { x, y } = calculateWidgetInstanceCoordinates({
     widgetInstance,
     display,
@@ -96,7 +90,7 @@ const createWidgetInstance = ({
   widgetWindow.setSkipTaskbar(true);
 
   // and load the index.html of the app.
-  widgetWindow.loadURL(widgetHtml);
+  widgetWindow.loadURL(`http://localhost:${widgetInstance.widget.config.port}`);
 
   widgetWindow.webContents.on('dom-ready', (): void => {
     // We need to expose widget instance settings to the BrowserWindow
@@ -243,14 +237,14 @@ export const init = (): void => {
 
     const [{ id }] = args as [{ id: string }];
     const widgetInstances = store.widgetsInstances.filter(
-      widgetInstance => widgetInstance.widget.id === id,
+      (widgetInstance) => widgetInstance.widget.id === id,
     );
 
     if (widgetInstances.length === 0) {
       return;
     }
 
-    widgetInstances.forEach(widgetInstance => {
+    widgetInstances.forEach((widgetInstance) => {
       destroyWidgetInstance(widgetInstance.id);
     });
 
@@ -302,16 +296,16 @@ export const init = (): void => {
     }
 
     const widgetInstances = store.widgetsInstances.filter(
-      widgetInstance => widgetInstance.widget.id === id,
+      (widgetInstance) => widgetInstance.widget.id === id,
     );
 
     if (widgetInstances.length === 0) {
       return;
     }
 
-    ipcMain.removeHandler(`api/bundler/startedParcelWatcher/${id}`);
-    ipcMain.handleOnce(`api/bundler/startedParcelWatcher/${id}`, () => {
-      widgetInstances.forEach(widgetInstance => {
+    ipcMain.removeHandler(`api/bundler/startedWidgetBundler/${id}`);
+    ipcMain.handleOnce(`api/bundler/startedWidgetBundler/${id}`, () => {
+      widgetInstances.forEach((widgetInstance) => {
         destroyWidgetInstance(widgetInstance.id);
       });
 

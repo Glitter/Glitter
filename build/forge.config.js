@@ -69,8 +69,8 @@ module.exports = {
               name: 'main_window',
             },
             {
-              html: './src/widgetLoader/parcel/index.html',
-              js: './src/widgetLoader/parcel/index.ts',
+              html: './src/widgetLoader/vite/index.html',
+              js: './src/widgetLoader/vite/index.ts',
               name: 'bundler_window',
             },
           ],

@@ -49,8 +49,6 @@ export const WIDGET_VUE = (): string => {
 </template>
 
 <script>
-import 'normalize.css';
-
 export default {
   name: 'HelloWorldWidget',
   props: {
@@ -83,7 +81,7 @@ export default {
 };
 
 export const INDEX_VUE = (): string => {
-  return `import Vue from 'vue/dist/vue.common.js';
+  return `import Vue from 'vue';
 import Widget from './Widget.vue';
 
 window.addEventListener('GlitterReady', e => {
@@ -102,7 +100,6 @@ window.addEventListener('GlitterReady', e => {
 
 export const WIDGET_REACT = (): string => {
   return `import React from 'react';
-import 'normalize.css';
 import './widget.css';
 
 const Widget = ({ settings }) => {
@@ -137,7 +134,6 @@ export const CSS_REACT = (): string => {
 export const INDEX_REACT = (): string => {
   return `import React from 'react';
 import ReactDOM from 'react-dom';
-import 'normalize.css';
 import Widget from './Widget.jsx';
 
 const App = ({ settings }) => {

@@ -1,10 +1,10 @@
 import catchify from 'catchify';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import { cast } from 'mobx-state-tree';
 import store, { DevelopmentWidgetConfig } from '@appStore/development';
 import { verifyDevelopmentWidget } from '@widgetLoader/verifyDevelopmentWidget';
 import { Either, left, right, isLeft } from 'fp-ts/lib/Either';
-import { startParcelWatcher } from '@widgetLoader/parcel';
+import { startWidgetBundler } from '@widgetLoader/bundler';
 
 interface LoadDevelopmentWidgetInputInterface {
   dir: string;
@@ -30,7 +30,7 @@ export const loadDevelopmentWidget = async ({
 
   const widgetConfig = verifyWidgetResult.right;
 
-  const existingWidget = store.widgets.find(widget => widget.path === dir);
+  const existingWidget = store.widgets.find((widget) => widget.path === dir);
 
   if (existingWidget !== undefined) {
     // This widget is already loaded, we only reload the config
@@ -51,15 +51,26 @@ export const loadDevelopmentWidget = async ({
     path: dir,
     config: {
       ...widgetConfig,
-      active: true,
+      active: false,
     },
     id: widgetId,
     securityScopedBookmark,
   });
 
-  setTimeout(() => {
-    startParcelWatcher({ id: widgetId });
-  }, 2000);
+  const [startWidgetBundlerError, startedWidgetBundler]: [
+    Error,
+    Either<string, { port: number }>,
+  ] = await catchify(startWidgetBundler({ id: widgetId }));
+
+  if (startWidgetBundlerError !== null || isLeft(startedWidgetBundler)) {
+    return left('Could not start the widget bundling');
+  }
+
+  store.toggleWidgetActive({
+    id: widgetId,
+    active: true,
+    port: startedWidgetBundler.right.port,
+  });
 
   return right('Widget successfully loaded');
 };

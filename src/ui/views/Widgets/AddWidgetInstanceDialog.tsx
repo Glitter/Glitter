@@ -50,7 +50,7 @@ const AddWidgetInstanceDialog: React.FC<AddWidgetInstanceDialogInterface> = obse
     >(undefined);
     const selectedWidget = useMemo(() => {
       return store.developmentWidgets.value.find(
-        widget => widget.id === selectedWidgetId,
+        (widget) => widget.id === selectedWidgetId,
       );
     }, [selectedWidgetId]);
 
@@ -62,7 +62,7 @@ const AddWidgetInstanceDialog: React.FC<AddWidgetInstanceDialogInterface> = obse
     ] = useState<{ [key: string]: string | number }>({});
     const validateField = (fieldName: string): boolean => {
       const field = selectedWidget?.config.settings.find(
-        settingsField => settingsField.name === fieldName,
+        (settingsField) => settingsField.name === fieldName,
       );
 
       if (field === undefined) {
@@ -74,7 +74,7 @@ const AddWidgetInstanceDialog: React.FC<AddWidgetInstanceDialogInterface> = obse
           widgetInstanceConfiguration[fieldName] === undefined ||
           widgetInstanceConfiguration[fieldName] === ''
         ) {
-          setValidation(currentValidation => ({
+          setValidation((currentValidation) => ({
             ...currentValidation,
             [fieldName]: 'This field is required',
           }));
@@ -87,7 +87,7 @@ const AddWidgetInstanceDialog: React.FC<AddWidgetInstanceDialogInterface> = obse
     const validateConfiguration = (): boolean => {
       let configurationIsValid = true;
 
-      selectedWidget?.config.settings.forEach(widgetConfigurationField => {
+      selectedWidget?.config.settings.forEach((widgetConfigurationField) => {
         const fieldIsValid = validateField(widgetConfigurationField.name);
 
         if (fieldIsValid === false) {
@@ -166,7 +166,7 @@ const AddWidgetInstanceDialog: React.FC<AddWidgetInstanceDialogInterface> = obse
                 </Styled.NoWidgetsInstalled>
               )}
               <Styled.WidgetsGrid>
-                {store.availableWidgets.map(developmentWidget => (
+                {store.availableWidgets.map((developmentWidget) => (
                   <Widget
                     cardProps={{ elevation: 0 }}
                     key={developmentWidget.id}
@@ -216,7 +216,7 @@ const AddWidgetInstanceDialog: React.FC<AddWidgetInstanceDialogInterface> = obse
             <DialogContent>
               <DynamicForm
                 fields={selectedWidget.config.settings.map(
-                  widgetConfigurationField => ({
+                  (widgetConfigurationField) => ({
                     ...widgetConfigurationField,
                     error:
                       typeof validation[widgetConfigurationField.name] ===

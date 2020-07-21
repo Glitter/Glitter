@@ -20,7 +20,7 @@ export const api = ({
       (): typeof DevelopmentWidget.Type[] => [],
       (x: typeof DevelopmentWidget.Type[]): typeof DevelopmentWidget.Type[] =>
         x,
-    )(listDevelopmentWidgets()).map(developmentWidget =>
+    )(listDevelopmentWidgets()).map((developmentWidget) =>
       getSnapshot(developmentWidget),
     );
 
@@ -57,7 +57,7 @@ export const api = ({
       }
 
       return fold(
-        errorMessage => ({
+        (errorMessage) => ({
           success: false,
           message: errorMessage,
         }),
@@ -84,7 +84,7 @@ export const api = ({
       }
 
       return fold(
-        errorMessage => ({
+        (errorMessage) => ({
           success: false,
           message: errorMessage,
         }),
@@ -111,7 +111,7 @@ export const api = ({
       }
 
       return fold(
-        errorMessage => ({
+        (errorMessage) => ({
           success: false,
           message: errorMessage,
         }),

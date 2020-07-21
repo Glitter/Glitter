@@ -41,7 +41,7 @@ const Widgets: React.FC = observer(() => {
 
     if (
       selectedDisplay === undefined ||
-      newDisplays.find(display => display.id === selectedDisplay.id) ===
+      newDisplays.find((display) => display.id === selectedDisplay.id) ===
         undefined
     ) {
       setSelectedDisplay(newDisplays.length > 0 ? newDisplays[0] : undefined);
@@ -362,7 +362,7 @@ const Widgets: React.FC = observer(() => {
             )}
             {store
               .screenDevelopmentWidgetInstances(selectedDisplay?.id)
-              .map(widgetInstance => (
+              .map((widgetInstance) => (
                 <Draggable
                   key={widgetInstance.id}
                   bounds="parent"
@@ -508,11 +508,11 @@ const Widgets: React.FC = observer(() => {
             value={selectedDisplay?.id}
             onChange={(event): void => {
               setSelectedDisplay(
-                displays.find(display => display.id === event.target.value),
+                displays.find((display) => display.id === event.target.value),
               );
             }}
           >
-            {displays.map(display => (
+            {displays.map((display) => (
               <MenuItem key={display.id} value={display.id}>
                 Screen {display.size.width}x{display.size.height}
               </MenuItem>

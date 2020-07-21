@@ -20,9 +20,7 @@ export const ScreenContainer = styled.section`
 `;
 
 export const Screen = styled.div`
-  background-color: ${color(theme.palette.primary.light)
-    .fade(0.8)
-    .string()};
+  background-color: ${color(theme.palette.primary.light).fade(0.8).string()};
   border-radius: ${rem(4)};
   max-height: 100%;
   position: relative;
@@ -58,9 +56,7 @@ export const ScreenWidgetInstanceTooltipButtons = styled.div`
 export const ScreenWidgetInstanceTooltipIcon = styled(IconButton)``;
 
 export const ScreenWidgetInstance = styled.div`
-  background-color: ${color(theme.palette.primary.light)
-    .fade(0.8)
-    .string()};
+  background-color: ${color(theme.palette.primary.light).fade(0.8).string()};
   border: 1px solid ${theme.palette.primary.main};
   border-radius: ${rem(4)};
   position: absolute;

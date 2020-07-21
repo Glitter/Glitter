@@ -7,29 +7,22 @@ import { getUiWindow } from '@main/uiWindow';
 import catchify from 'catchify';
 import { getBundlerWindow } from '@main/bundlerWindow';
 
-interface StartParcelWatcherInputInterface {
+interface StartWidgetBundlerInputInterface {
   id: string;
 }
 
-export const startParcelWatcher = async ({
+export const startWidgetBundler = async ({
   id,
-}: StartParcelWatcherInputInterface): Promise<Either<string, string>> => {
-  const widget = store.widgets.find(storeWidget => storeWidget.id === id);
+}: StartWidgetBundlerInputInterface): Promise<
+  Either<string, { port: number }>
+> => {
+  const widget = store.widgets.find((storeWidget) => storeWidget.id === id);
 
   if (widget === undefined) {
     return left('Could not start the parcel process, please try again');
   }
 
   const bundlerEntry = path.resolve(widget.path, 'index.html');
-  const bundlerConfig = {
-    outDir: path.resolve(widget.path, './dist'),
-    watch: true,
-    minify: false,
-    target: 'browser',
-    publicUrl: './',
-    hmr: true,
-    hmrHostname: 'localhost',
-  };
 
   // Verify entry exists
   const [entryExistsError, entryExists]: [Error, boolean] = await catchify(
@@ -46,35 +39,37 @@ export const startParcelWatcher = async ({
 
   const bundlerWindow = await getBundlerWindow();
 
-  bundlerWindow.webContents.send('api/bundler/startParcelWatcher', {
-    widget,
-    bundlerEntry,
-    bundlerConfig,
+  bundlerWindow.webContents.send('api/bundler/startWidgetBundler', {
+    widget: {
+      id: widget.id,
+      path: widget.path,
+      securityScopedBookmark: widget.securityScopedBookmark,
+    },
   });
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     ipcMain.removeHandler(
-      `api/bundler/startParcelWatcherCompleted/${widget.id}`,
+      `api/bundler/startWidgetBundlerCompleted/${widget.id}`,
     );
     ipcMain.handleOnce(
-      `api/bundler/startParcelWatcherCompleted/${widget.id}`,
-      () => {
-        resolve();
+      `api/bundler/startWidgetBundlerCompleted/${widget.id}`,
+      (_event, { port }) => {
+        resolve(right({ port }));
       },
     );
   });
 };
 
-interface StopParcelWatcherInputInterface {
+interface StopWidgetBundlerInputInterface {
   id: string;
 }
 
-export const stopParcelWatcher = async ({
+export const stopWidgetBundler = async ({
   id,
-}: StopParcelWatcherInputInterface): Promise<Either<string, string>> => {
+}: StopWidgetBundlerInputInterface): Promise<Either<string, string>> => {
   const bundlerWindow = await getBundlerWindow();
 
-  bundlerWindow.webContents.send('api/bundler/stopParcelWatcher', {
+  bundlerWindow.webContents.send('api/bundler/stopWidgetBundler', {
     widgetId: id,
   });
 

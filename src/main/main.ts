@@ -1,6 +1,6 @@
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 import { app, shell } from 'electron';
-import { fold } from 'fp-ts/lib/Either';
+import { fold, isLeft } from 'fp-ts/lib/Either';
 import { api as initApi } from '@main/api';
 import {
   init as initDevelopmentStore,
@@ -10,7 +10,7 @@ import {
 import { getUiWindow, destroyUiWindow } from '@main/uiWindow';
 import { getBundlerWindow } from '@main/bundlerWindow';
 import { listDevelopmentWidgets } from '@widgetLoader/listDevelopmentWidgets';
-import { startParcelWatcher } from '@widgetLoader/parcel';
+import { startWidgetBundler } from '@widgetLoader/bundler';
 import {
   init as displayDevelopmentWidgetsInstances,
   aliveWidgetsInstances,
@@ -29,7 +29,7 @@ app.isPackaged && fixPath();
 const instantiateUi = async (): Promise<void> => {
   const uiWindow = getUiWindow();
 
-  uiWindow.webContents.on('new-window', function(e, url) {
+  uiWindow.webContents.on('new-window', function (e, url) {
     e.preventDefault();
     shell.openExternal(url);
   });
@@ -38,7 +38,7 @@ const instantiateUi = async (): Promise<void> => {
   // We disable it on Windows due to buggy behavior
   if (process.platform !== 'win32') {
     uiWindow.on('focus', () => {
-      aliveWidgetsInstances.forEach(widgetWindow => {
+      aliveWidgetsInstances.forEach((widgetWindow) => {
         widgetWindow.blur();
       });
     });
@@ -63,7 +63,7 @@ app.on('ready', () => {
   // Timeout necessary on Linux due to transparency bug
   // https://github.com/electron/electron/issues/2170
   const initUi = (): Promise<void> =>
-    new Promise(resolve => {
+    new Promise((resolve) => {
       setTimeout((): void => {
         instantiateUi().then((): void => {
           resolve();
@@ -86,7 +86,7 @@ app.on('ready', () => {
       const activeDevelopmentWidgets = fold(
         () => [],
         (widgets: typeof DevelopmentWidget.Type[]) =>
-          widgets.filter(widget => widget.config.active === true),
+          widgets.filter((widget) => widget.config.active === true),
       )(listDevelopmentWidgets());
 
       if (activeDevelopmentWidgets.length === 0) {
@@ -94,22 +94,34 @@ app.on('ready', () => {
       }
 
       return Promise.all(
-        activeDevelopmentWidgets.map(widget => {
-          return startParcelWatcher({ id: widget.id }).then(() => {
-            const widgetInstances = store.widgetsInstances.filter(
-              widgetInstance => widgetInstance.widget.id === widget.id,
-            );
+        activeDevelopmentWidgets.map((widget) => {
+          return startWidgetBundler({ id: widget.id }).then(
+            (startedWidgetBundler) => {
+              if (isLeft(startedWidgetBundler)) {
+                return;
+              }
 
-            if (widgetInstances.length === 0) {
-              return;
-            }
+              store.toggleWidgetActive({
+                id: widget.id,
+                active: true,
+                port: startedWidgetBundler.right.port,
+              });
 
-            widgetInstances.forEach(widgetInstance => {
-              destroyWidgetInstance(widgetInstance.id);
-            });
+              const widgetInstances = store.widgetsInstances.filter(
+                (widgetInstance) => widgetInstance.widget.id === widget.id,
+              );
 
-            process.nextTick(displayDevelopmentWidgetsInstances);
-          });
+              if (widgetInstances.length === 0) {
+                return;
+              }
+
+              widgetInstances.forEach((widgetInstance) => {
+                destroyWidgetInstance(widgetInstance.id);
+              });
+
+              process.nextTick(displayDevelopmentWidgetsInstances);
+            },
+          );
         }),
       );
     });
