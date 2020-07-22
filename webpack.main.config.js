@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
+const CopyPlugin = require('copy-webpack-plugin');
 const plugins = require('./webpack.plugins');
 const rules = require('./webpack.rules');
 
@@ -18,7 +19,17 @@ module.exports = {
   module: {
     rules,
   },
-  plugins,
+  plugins: [
+    ...plugins,
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, `./vite`),
+          to: '',
+        },
+      ],
+    }),
+  ],
   resolve: {
     alias: {
       '@assets': path.resolve(__dirname, './assets'),

@@ -45,7 +45,12 @@ module.exports = {
     'no-spaced-func': ['off'],
     'import/prefer-default-export': ['off'],
     'no-underscore-dangle': 'off',
-    'prettier/prettier': 'error',
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
     // We disable max length, makes no sense when using prettier
     'max-len': 'off',
   },
