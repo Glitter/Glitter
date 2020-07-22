@@ -50,7 +50,7 @@ const AppMenu: React.FC<PropsInterface> = observer(({ store }) => {
   return (
     <Styled.AppMenu>
       <Styled.AppMenuItems>
-        {MENU_ITEMS_TOP.map(menuItem => (
+        {MENU_ITEMS_TOP.map((menuItem) => (
           <Styled.AppMenuItem key={menuItem.view}>
             <Tooltip title={menuItem.label} placement="right">
               <Styled.AppMenuItemButton
@@ -71,7 +71,7 @@ const AppMenu: React.FC<PropsInterface> = observer(({ store }) => {
         ))}
       </Styled.AppMenuItems>
       <Styled.AppMenuItems>
-        {MENU_ITEMS_BOTTOM.map(menuItem => (
+        {MENU_ITEMS_BOTTOM.map((menuItem) => (
           <Styled.AppMenuItem key={menuItem.view}>
             <Tooltip title={menuItem.label} placement="right">
               <Styled.AppMenuItemButton

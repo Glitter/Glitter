@@ -110,7 +110,7 @@ export const Store = types
     developmentWidgetsLogs: types.map(types.array(types.string)),
     developmentWidgetsInstances: DevelopmentWidgetsInstances,
   })
-  .views(self => ({
+  .views((self) => ({
     get availableWidgets(): typeof DevelopmentWidgetsValue.Type {
       return self.developmentWidgets.value;
     },
@@ -122,11 +122,11 @@ export const Store = types
       }
 
       return self.developmentWidgetsInstances.value.filter(
-        widgetInstance => widgetInstance.displayId === displayId,
+        (widgetInstance) => widgetInstance.displayId === displayId,
       );
     },
   }))
-  .actions(self => {
+  .actions((self) => {
     // Development
     const listDevelopmentWidgets = flow(function* listDevelopmentWidgets({
       silent = false,

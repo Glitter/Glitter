@@ -52,38 +52,38 @@ const Developers: React.FC = observer(() => {
   const widgetConfigurationFields = [
     {
       name: 'title',
-      type: 'text' as 'text',
+      type: 'text' as const,
       label: 'Widget title',
       description: 'Title of your widget. Make it relevant and memorable :)',
     },
     {
       name: 'subtitle',
-      type: 'text' as 'text',
+      type: 'text' as const,
       label: 'Widget subtitle',
       description: 'Optional subtitle for your widget',
     },
     {
       name: 'description',
-      type: 'text' as 'text',
+      type: 'text' as const,
       label: 'Widget description',
       description: 'Optional, longer description of your widget',
       multiline: true,
     },
     {
       name: 'width',
-      type: 'text' as 'text',
+      type: 'text' as const,
       label: 'Widget width',
       description: 'This is the width of your widget window',
-      inputType: 'number' as 'number',
-      size: 'medium' as 'medium',
+      inputType: 'number' as const,
+      size: 'medium' as const,
     },
     {
       name: 'height',
-      type: 'text' as 'text',
+      type: 'text' as const,
       label: 'Widget height',
       description: 'This is the height of your widget window',
-      inputType: 'number' as 'number',
-      size: 'medium' as 'medium',
+      inputType: 'number' as const,
+      size: 'medium' as const,
     },
   ];
   const [validation, setValidation] = useState<{ [key: string]: string }>({});
@@ -95,7 +95,7 @@ const Developers: React.FC = observer(() => {
           (typeof widgetConfiguration.title === 'string' &&
             widgetConfiguration.title.trim().length === 0)
         ) {
-          setValidation(currentValidation => ({
+          setValidation((currentValidation) => ({
             ...currentValidation,
             [name]: 'Your widget needs a title',
           }));
@@ -108,7 +108,7 @@ const Developers: React.FC = observer(() => {
           widgetConfiguration.width === undefined ||
           widgetConfiguration.width === ''
         ) {
-          setValidation(currentValidation => ({
+          setValidation((currentValidation) => ({
             ...currentValidation,
             [name]: 'Your widget needs a width',
           }));
@@ -119,7 +119,7 @@ const Developers: React.FC = observer(() => {
           const parsedWidth = parseInt(widgetConfiguration.width, 10);
 
           if (parsedWidth <= 0) {
-            setValidation(currentValidation => ({
+            setValidation((currentValidation) => ({
               ...currentValidation,
               [name]:
                 'It will be hard to see this widget, please increase width to at least 1',
@@ -127,7 +127,7 @@ const Developers: React.FC = observer(() => {
             return false;
           }
         } catch (error) {
-          setValidation(currentValidation => ({
+          setValidation((currentValidation) => ({
             ...currentValidation,
             [name]: 'Width should ideally be a number :)',
           }));
@@ -139,7 +139,7 @@ const Developers: React.FC = observer(() => {
           widgetConfiguration.height === undefined ||
           widgetConfiguration.height === ''
         ) {
-          setValidation(currentValidation => ({
+          setValidation((currentValidation) => ({
             ...currentValidation,
             [name]: 'Your widget needs a height',
           }));
@@ -150,7 +150,7 @@ const Developers: React.FC = observer(() => {
           const parsedHeight = parseInt(widgetConfiguration.height, 10);
 
           if (parsedHeight <= 0) {
-            setValidation(currentValidation => ({
+            setValidation((currentValidation) => ({
               ...currentValidation,
               [name]:
                 'It will be hard to see this widget, please increase height to at least 1',
@@ -158,7 +158,7 @@ const Developers: React.FC = observer(() => {
             return false;
           }
         } catch (error) {
-          setValidation(currentValidation => ({
+          setValidation((currentValidation) => ({
             ...currentValidation,
             [name]: 'Height should ideally be a number :)',
           }));
@@ -174,7 +174,7 @@ const Developers: React.FC = observer(() => {
   const validateConfiguration = (): boolean => {
     let configurationIsValid = true;
 
-    widgetConfigurationFields.forEach(widgetConfigurationField => {
+    widgetConfigurationFields.forEach((widgetConfigurationField) => {
       const fieldIsValid = validateField(widgetConfigurationField.name);
 
       if (fieldIsValid === false) {
@@ -217,7 +217,7 @@ const Developers: React.FC = observer(() => {
             }),
           ), // eslint-disable-line function-paren-newline
         )
-          .then(widgetsLoaded => {
+          .then((widgetsLoaded) => {
             const successes = widgetsLoaded.filter(
               ({ success }) => success === true,
             );
@@ -268,7 +268,7 @@ const Developers: React.FC = observer(() => {
         }
 
         Promise.all(
-          filePaths.map(filePath =>
+          filePaths.map((filePath) =>
             apiCreateDevelopmentWidget({
               title: widgetConfiguration.title,
               subtitle: widgetConfiguration.subtitle,
@@ -281,7 +281,7 @@ const Developers: React.FC = observer(() => {
             }),
           ), // eslint-disable-line function-paren-newline
         )
-          .then(widgetsCreated => {
+          .then((widgetsCreated) => {
             const successes = widgetsCreated.filter(
               ({ success }) => success === true,
             );
@@ -314,7 +314,7 @@ const Developers: React.FC = observer(() => {
 
             return [];
           })
-          .then(widgetsLoaded => {
+          .then((widgetsLoaded) => {
             const successes = widgetsLoaded.filter(
               ({ success }) => success === true,
             );
@@ -447,7 +447,7 @@ const Developers: React.FC = observer(() => {
               <DialogContent>
                 <DynamicForm
                   fields={widgetConfigurationFields.map(
-                    widgetConfigurationField => ({
+                    (widgetConfigurationField) => ({
                       ...widgetConfigurationField,
                       error:
                         typeof validation[widgetConfigurationField.name] ===
@@ -516,7 +516,7 @@ const Developers: React.FC = observer(() => {
       )}
       {store.developmentWidgets.value.length > 0 && (
         <Styled.WidgetsGrid>
-          {store.developmentWidgets.value.map(developmentWidget => (
+          {store.developmentWidgets.value.map((developmentWidget) => (
             <DevelopmentWidget
               key={developmentWidget.id}
               path={developmentWidget.path}

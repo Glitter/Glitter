@@ -28,7 +28,7 @@ export const WidgetIcon = styled(
     <Avatar {...rest} ref={ref as RefObject<HTMLDivElement>} />
   )),
 )`
-  ${props =>
+  ${(props) =>
     props.type === 'vue'
       ? css`
           background-color: hsl(153, 48%, 49%);

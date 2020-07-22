@@ -35,6 +35,7 @@ const getValue = ({
   return undefined;
 };
 
+/* eslint-disable react/prop-types */
 const renderField = ({
   field,
   state,
@@ -68,6 +69,7 @@ const renderField = ({
       return null;
   }
 };
+/* eslint-enable react/prop-types */
 
 const DynamicForm: React.FC<DynamicFormInterface> = ({
   fields,
@@ -83,12 +85,12 @@ const DynamicForm: React.FC<DynamicFormInterface> = ({
         onSubmit && onSubmit(state);
       }}
     >
-      {fields.map(field => (
+      {fields.map((field) => (
         <Styled.Field key={field.name}>
           {renderField({
             field,
             state,
-            onChange: value => {
+            onChange: (value) => {
               onChange({
                 state: {
                   ...state,
@@ -97,7 +99,7 @@ const DynamicForm: React.FC<DynamicFormInterface> = ({
                 name: field.name,
               });
             },
-            onShouldValidate: name => {
+            onShouldValidate: (name) => {
               onShouldValidate && onShouldValidate(name);
             },
           })}

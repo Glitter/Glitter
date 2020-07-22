@@ -54,12 +54,6 @@ const createWidgetInstance = ({
   widgetInstance: typeof DevelopmentWidgetInstance.Type;
   display: Display;
 }): void => {
-  const widgetHtml = urlFormat.format({
-    protocol: 'file',
-    slashes: true,
-    pathname: path.resolve(widgetInstance.widget.path, './dist/index.html'),
-  });
-
   const { x, y } = calculateWidgetInstanceCoordinates({
     widgetInstance,
     display,
@@ -96,7 +90,7 @@ const createWidgetInstance = ({
   widgetWindow.setSkipTaskbar(true);
 
   // and load the index.html of the app.
-  widgetWindow.loadURL(widgetHtml);
+  widgetWindow.loadURL(`http://localhost:${widgetInstance.widget.config.port}`);
 
   widgetWindow.webContents.on('dom-ready', (): void => {
     // We need to expose widget instance settings to the BrowserWindow
@@ -151,6 +145,10 @@ const initWidgetsInstances = (): void => {
   const displays = screen.getAllDisplays();
 
   store.widgetsInstances.forEach((widgetInstance): void => {
+    if (widgetInstance.widget.config.active === false) {
+      return;
+    }
+
     const display = displays.find(({ id }) => widgetInstance.displayId === id);
 
     if (display === undefined) {
@@ -199,7 +197,12 @@ const repositionWidgetsInstances = (): void => {
       display,
     });
 
-    widgetWindow.setBounds({ x, y });
+    widgetWindow.setBounds({
+      x,
+      y,
+      width: widgetInstance.widget.config.width,
+      height: widgetInstance.widget.config.height,
+    });
   });
 };
 
@@ -219,11 +222,11 @@ export const init = (): void => {
 
   // Reposition windows on position change
   screen.on('display-added', () => {
-    process.nextTick(repositionWidgetsInstances);
+    setTimeout(repositionWidgetsInstances, 300);
     getUiWindow().webContents.send('api/screen/displayAdded');
   });
   screen.on('display-removed', () => {
-    process.nextTick(repositionWidgetsInstances);
+    setTimeout(repositionWidgetsInstances, 300);
     getUiWindow().webContents.send('api/screen/displayRemoved');
   });
 
@@ -243,14 +246,14 @@ export const init = (): void => {
 
     const [{ id }] = args as [{ id: string }];
     const widgetInstances = store.widgetsInstances.filter(
-      widgetInstance => widgetInstance.widget.id === id,
+      (widgetInstance) => widgetInstance.widget.id === id,
     );
 
     if (widgetInstances.length === 0) {
       return;
     }
 
-    widgetInstances.forEach(widgetInstance => {
+    widgetInstances.forEach((widgetInstance) => {
       destroyWidgetInstance(widgetInstance.id);
     });
 
@@ -297,25 +300,22 @@ export const init = (): void => {
 
     const [{ id, active }] = args as [{ id: string; active: boolean }];
 
-    if (active !== true) {
-      return;
-    }
-
     const widgetInstances = store.widgetsInstances.filter(
-      widgetInstance => widgetInstance.widget.id === id,
+      (widgetInstance) => widgetInstance.widget.id === id,
     );
 
     if (widgetInstances.length === 0) {
       return;
     }
 
-    ipcMain.removeHandler(`api/bundler/startedParcelWatcher/${id}`);
-    ipcMain.handleOnce(`api/bundler/startedParcelWatcher/${id}`, () => {
-      widgetInstances.forEach(widgetInstance => {
-        destroyWidgetInstance(widgetInstance.id);
-      });
-
-      process.nextTick(initWidgetsInstances);
+    widgetInstances.forEach((widgetInstance) => {
+      destroyWidgetInstance(widgetInstance.id);
     });
+
+    if (active !== true) {
+      return;
+    }
+
+    process.nextTick(initWidgetsInstances);
   });
 };

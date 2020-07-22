@@ -27,7 +27,7 @@ const ManageWidgetInstanceDialog: React.FC<ManageWidgetInstanceDialogInterface> 
     const store = useStore();
     const selectedWidgetInstance = useMemo(() => {
       return store.developmentWidgetsInstances.value.find(
-        widgetInstance => widgetInstance.id === selectedWidgetInstanceId,
+        (widgetInstance) => widgetInstance.id === selectedWidgetInstanceId,
       );
     }, [selectedWidgetInstanceId]);
 
@@ -56,7 +56,7 @@ const ManageWidgetInstanceDialog: React.FC<ManageWidgetInstanceDialogInterface> 
     );
     const validateField = (fieldName: string): boolean => {
       const field = selectedWidgetInstance?.widget?.config.settings.find(
-        settingsField => settingsField.name === fieldName,
+        (settingsField) => settingsField.name === fieldName,
       );
 
       if (field === undefined) {
@@ -68,7 +68,7 @@ const ManageWidgetInstanceDialog: React.FC<ManageWidgetInstanceDialogInterface> 
           widgetInstanceConfiguration[fieldName] === undefined ||
           widgetInstanceConfiguration[fieldName] === ''
         ) {
-          setValidation(currentValidation => ({
+          setValidation((currentValidation) => ({
             ...currentValidation,
             [fieldName]: 'This field is required',
           }));
@@ -82,7 +82,7 @@ const ManageWidgetInstanceDialog: React.FC<ManageWidgetInstanceDialogInterface> 
       let configurationIsValid = true;
 
       selectedWidgetInstance?.widget?.config.settings.forEach(
-        widgetConfigurationField => {
+        (widgetConfigurationField) => {
           const fieldIsValid = validateField(widgetConfigurationField.name);
 
           if (fieldIsValid === false) {
@@ -137,7 +137,7 @@ const ManageWidgetInstanceDialog: React.FC<ManageWidgetInstanceDialogInterface> 
           {widgetHasSettings === true && (
             <DynamicForm
               fields={selectedWidgetInstance.widget.config.settings.map(
-                widgetConfigurationField => ({
+                (widgetConfigurationField) => ({
                   ...widgetConfigurationField,
                   error:
                     typeof validation[widgetConfigurationField.name] ===
