@@ -68,11 +68,6 @@ module.exports = {
               js: './src/ui/renderer.tsx',
               name: 'main_window',
             },
-            {
-              html: './src/widgetLoader/vite/index.html',
-              js: './src/widgetLoader/vite/index.ts',
-              name: 'bundler_window',
-            },
           ],
         },
       },

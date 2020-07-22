@@ -1,5 +1,6 @@
 const path = require('path');
-const reactPlugin = require('vite-plugin-react');
+const nativeRequire = require('../main/node/nativeRequire');
+const reactPlugin = nativeRequire('vite-plugin-react');
 
 const customReactServeLocalPlugin = {
   configureServer: ({ app }) => {
@@ -12,7 +13,9 @@ const customReactServeLocalPlugin = {
 
       const file = ctx.path.replace(
         '/@modules/@pika/react',
-        `${path.resolve(__dirname, '../../node_modules')}/@pika/react`,
+        `${path.resolve(__dirname, '../../node_modules')}${path.sep}@pika${
+          path.sep
+        }react`,
       );
 
       ctx.path = file;

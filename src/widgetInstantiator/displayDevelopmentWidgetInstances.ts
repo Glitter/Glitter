@@ -193,7 +193,12 @@ const repositionWidgetsInstances = (): void => {
       display,
     });
 
-    widgetWindow.setBounds({ x, y });
+    widgetWindow.setBounds({
+      x,
+      y,
+      width: widgetInstance.widget.config.width,
+      height: widgetInstance.widget.config.height,
+    });
   });
 };
 
@@ -213,11 +218,11 @@ export const init = (): void => {
 
   // Reposition windows on position change
   screen.on('display-added', () => {
-    process.nextTick(repositionWidgetsInstances);
+    setTimeout(repositionWidgetsInstances, 300);
     getUiWindow().webContents.send('api/screen/displayAdded');
   });
   screen.on('display-removed', () => {
-    process.nextTick(repositionWidgetsInstances);
+    setTimeout(repositionWidgetsInstances, 300);
     getUiWindow().webContents.send('api/screen/displayRemoved');
   });
 

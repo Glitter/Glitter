@@ -37,7 +37,7 @@ module.exports = {
             patterns: [
               {
                 from: path.resolve(__dirname, `./vite/node_modules`),
-                to: `bundler_window/node_modules`,
+                to: `node_modules`,
               },
             ],
           }),

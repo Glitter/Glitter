@@ -66,6 +66,10 @@ export default {
 *::after {
   box-sizing: border-box;
 }
+
+body {
+  margin: 0;
+}
 </style>
 
 <style scoped>
@@ -81,19 +85,13 @@ export default {
 };
 
 export const INDEX_VUE = (): string => {
-  return `import Vue from 'vue';
+  return `import { createApp } from 'vue';
 import Widget from './Widget.vue';
 
-window.addEventListener('GlitterReady', e => {
-  const WidgetClass = Vue.extend(Widget);
-  const widget = new WidgetClass({
-    el: '#app',
-    propsData: {
-      settings: e.detail.settings,
-    },
-  });
-
-  widget.$mount();
+window.addEventListener('GlitterReady', (e) => {
+  createApp(Widget, {
+    settings: e.detail.settings,
+  }).mount('#app');
 });
 `;
 };
@@ -119,6 +117,10 @@ export const CSS_REACT = (): string => {
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+body {
+  margin: 0;
 }
 
 .widget {
@@ -150,10 +152,13 @@ window.addEventListener('GlitterReady', e => {
 };
 
 export const INDEX_HTML = ({ type }: { type: string }): string => {
-  return `<html>
+  return `<!DOCTYPE html>
+<html lang="en">
   <body>
     <div id="app"></div>
-    <script src="./index.${type === 'react' ? 'jsx' : 'js'}"></script>
+    <script type="module" src="./index.${
+      type === 'react' ? 'jsx' : 'js'
+    }"></script>
   </body>
 </html>`;
 };

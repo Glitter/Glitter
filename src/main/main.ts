@@ -8,7 +8,6 @@ import {
   DevelopmentWidget,
 } from '@appStore/development';
 import { getUiWindow, destroyUiWindow } from '@main/uiWindow';
-import { getBundlerWindow } from '@main/bundlerWindow';
 import { listDevelopmentWidgets } from '@widgetLoader/listDevelopmentWidgets';
 import { startWidgetBundler } from '@widgetLoader/bundler';
 import {
@@ -52,10 +51,6 @@ const instantiateUi = async (): Promise<void> => {
   return uiWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 };
 
-const instantiateBundler = async (): Promise<void> => {
-  await getBundlerWindow();
-};
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -78,7 +73,6 @@ app.on('ready', () => {
       });
     })
     .then(initUi)
-    .then(instantiateBundler)
     .then(displayDevelopmentWidgetsInstances)
     .then(() => {
       // When the application just started, we want to automatically start the
