@@ -9,7 +9,6 @@ import catchify from 'catchify';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const nativeRequire = require('../main/node/nativeRequire');
 const { createServer, resolveConfig } = nativeRequire('vite');
-const viteConfig = require.resolve('./vite.config');
 
 const widgetBundlers = new Map();
 
@@ -56,7 +55,10 @@ export const startWidgetBundler = async ({
     text: 'Starting bundling',
   });
 
-  const config = await resolveConfig('development', viteConfig);
+  const config = await resolveConfig(
+    'development',
+    path.resolve(__dirname, './vite.config.js'),
+  );
   const bundler = createServer({
     ...config,
     root: widget.path,
