@@ -432,6 +432,9 @@ const Widgets: React.FC = observer(() => {
                       <Styled.ScreenWidgetInstanceTitle variant="body2">
                         {widgetInstance.widget.config.title}
                       </Styled.ScreenWidgetInstanceTitle>
+                      {widgetInstance.widget.config.active === false && (
+                        <p>Inactive - will not be rendered</p>
+                      )}
                     </Styled.ScreenWidgetInstanceContent>
                   </Styled.ScreenWidgetInstance>
                 </Draggable>

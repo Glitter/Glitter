@@ -145,6 +145,10 @@ const initWidgetsInstances = (): void => {
   const displays = screen.getAllDisplays();
 
   store.widgetsInstances.forEach((widgetInstance): void => {
+    if (widgetInstance.widget.config.active === false) {
+      return;
+    }
+
     const display = displays.find(({ id }) => widgetInstance.displayId === id);
 
     if (display === undefined) {
@@ -296,10 +300,6 @@ export const init = (): void => {
 
     const [{ id, active }] = args as [{ id: string; active: boolean }];
 
-    if (active !== true) {
-      return;
-    }
-
     const widgetInstances = store.widgetsInstances.filter(
       (widgetInstance) => widgetInstance.widget.id === id,
     );
@@ -308,13 +308,14 @@ export const init = (): void => {
       return;
     }
 
-    ipcMain.removeHandler(`api/bundler/startedWidgetBundler/${id}`);
-    ipcMain.handleOnce(`api/bundler/startedWidgetBundler/${id}`, () => {
-      widgetInstances.forEach((widgetInstance) => {
-        destroyWidgetInstance(widgetInstance.id);
-      });
-
-      process.nextTick(initWidgetsInstances);
+    widgetInstances.forEach((widgetInstance) => {
+      destroyWidgetInstance(widgetInstance.id);
     });
+
+    if (active !== true) {
+      return;
+    }
+
+    process.nextTick(initWidgetsInstances);
   });
 };
