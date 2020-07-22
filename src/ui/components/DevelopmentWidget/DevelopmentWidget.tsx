@@ -216,11 +216,7 @@ const DevelopmentWidget: React.FC<DevelopmentWidgetInterface> = observer(
             {logs.length > 0 && (
               <>
                 <Styled.Logs>
-                  {logs
-                    .slice()
-                    .reverse()
-                    .slice(0, 2)
-                    .join('\n')}
+                  {logs.slice().reverse().slice(0, 2).reverse().join('\n')}
                 </Styled.Logs>
                 <Styled.LogsSeeAll size="small" onClick={openLogsDialog}>
                   See full logs
@@ -235,16 +231,12 @@ const DevelopmentWidget: React.FC<DevelopmentWidgetInterface> = observer(
                   <Styled.LogsFullTitle disableTypography>
                     Full logs
                     <Styled.LogsFullNote variant="body2">
-                      Latest logs are displayed at the top
+                      Latest logs are displayed at the bottom
                     </Styled.LogsFullNote>
                   </Styled.LogsFullTitle>
                   <DialogContent>
                     <Styled.LogsFull>
-                      {logs
-                        .slice()
-                        .reverse()
-                        .slice(0, 200)
-                        .join('\n')}
+                      {logs.slice().slice(0, 200).join('\n')}
                     </Styled.LogsFull>
                   </DialogContent>
                 </Dialog>

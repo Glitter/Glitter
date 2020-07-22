@@ -62,7 +62,7 @@ Widget.propTypes = {
   description: PropTypes.string,
   actions: PropTypes.element,
   cardProps: PropTypes.shape({
-    elevation: PropTypes.number,
+    elevation: PropTypes.any,
   }),
 };
 

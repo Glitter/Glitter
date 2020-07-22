@@ -3,7 +3,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const shellPath = require('shell-path');
 
-export default function(): void {
+export default function (): void {
   if (['darwin', 'linux'].includes(process.platform) === false) {
     return;
   }

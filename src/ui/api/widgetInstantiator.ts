@@ -1,7 +1,9 @@
 import { ipcRenderer } from 'electron';
 import { DevelopmentWidgetsInstancesValue } from '@ui/store';
 
-export const listDevelopmentWidgetsInstances = async (): Promise<typeof DevelopmentWidgetsInstancesValue.Type> => {
+export const listDevelopmentWidgetsInstances = async (): Promise<
+  typeof DevelopmentWidgetsInstancesValue.Type
+> => {
   return await ipcRenderer.invoke(
     'api/widgetInstantiator/listDevelopmentWidgetsInstances',
   );

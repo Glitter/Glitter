@@ -18,7 +18,7 @@ export const api = (): void => {
         (
           x: typeof DevelopmentWidgetInstance.Type[],
         ): typeof DevelopmentWidgetInstance.Type[] => x,
-      )(listDevelopmentWidgetsInstances()).map(developmentWidgetInstance =>
+      )(listDevelopmentWidgetsInstances()).map((developmentWidgetInstance) =>
         getSnapshot(developmentWidgetInstance),
       );
 
@@ -55,7 +55,7 @@ export const api = (): void => {
       }
 
       return fold(
-        errorMessage => ({
+        (errorMessage) => ({
           success: false,
           message: errorMessage,
         }),
@@ -84,7 +84,7 @@ export const api = (): void => {
       }
 
       return fold(
-        errorMessage => ({
+        (errorMessage) => ({
           success: false,
           message: errorMessage,
         }),
@@ -127,7 +127,7 @@ export const api = (): void => {
       }
 
       return fold(
-        errorMessage => ({
+        (errorMessage) => ({
           success: false,
           message: errorMessage,
         }),
@@ -165,7 +165,7 @@ export const api = (): void => {
       }
 
       return fold(
-        errorMessage => ({
+        (errorMessage) => ({
           success: false,
           message: errorMessage,
         }),

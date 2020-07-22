@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { observer } from 'mobx-react-lite';
 import { remote, ipcRenderer } from 'electron';
 import { useMeasure } from 'react-use';
@@ -34,19 +34,19 @@ const Widgets: React.FC = observer(() => {
   const [selectedDisplay, setSelectedDisplay] = useState(
     displays.length > 0 ? displays[0] : undefined,
   );
-  const updateDisplays = (): void => {
+  const updateDisplays = useCallback((): void => {
     const newDisplays = remote.screen.getAllDisplays();
 
     setDisplays(newDisplays);
 
     if (
       selectedDisplay === undefined ||
-      newDisplays.find(display => display.id === selectedDisplay.id) ===
+      newDisplays.find((display) => display.id === selectedDisplay.id) ===
         undefined
     ) {
       setSelectedDisplay(newDisplays.length > 0 ? newDisplays[0] : undefined);
     }
-  };
+  }, [displays, selectedDisplay]);
 
   useEffect(() => {
     ipcRenderer.on('api/screen/displayAdded', updateDisplays);
@@ -56,7 +56,7 @@ const Widgets: React.FC = observer(() => {
       ipcRenderer.off('api/screen/displayAdded', updateDisplays);
       ipcRenderer.off('api/screen/displayRemoved', updateDisplays);
     };
-  }, []);
+  }, [updateDisplays]);
 
   // Screen size
   const displaySize = useMemo(() => {
@@ -362,7 +362,7 @@ const Widgets: React.FC = observer(() => {
             )}
             {store
               .screenDevelopmentWidgetInstances(selectedDisplay?.id)
-              .map(widgetInstance => (
+              .map((widgetInstance) => (
                 <Draggable
                   key={widgetInstance.id}
                   bounds="parent"
@@ -432,6 +432,9 @@ const Widgets: React.FC = observer(() => {
                       <Styled.ScreenWidgetInstanceTitle variant="body2">
                         {widgetInstance.widget.config.title}
                       </Styled.ScreenWidgetInstanceTitle>
+                      {widgetInstance.widget.config.active === false && (
+                        <p>Inactive - will not be rendered</p>
+                      )}
                     </Styled.ScreenWidgetInstanceContent>
                   </Styled.ScreenWidgetInstance>
                 </Draggable>
@@ -439,7 +442,6 @@ const Widgets: React.FC = observer(() => {
           </Styled.Screen>
         )}
       </Styled.ScreenContainer>
-
       <ManageWidgetInstanceDialog
         key={selectedWidgetInstanceId || ''}
         open={
@@ -460,7 +462,6 @@ const Widgets: React.FC = observer(() => {
         }}
         selectedWidgetInstanceId={selectedWidgetInstanceId}
       />
-
       <Dialog
         open={deleteWidgetInstanceDialogOpen}
         onClose={closeDeleteWidgetInstanceDialog}
@@ -501,18 +502,17 @@ const Widgets: React.FC = observer(() => {
           </Button>
         </DialogActions>
       </Dialog>
-
       <Styled.Actions>
         {displays.length > 1 && (
           <Select
             value={selectedDisplay?.id}
             onChange={(event): void => {
               setSelectedDisplay(
-                displays.find(display => display.id === event.target.value),
+                displays.find((display) => display.id === event.target.value),
               );
             }}
           >
-            {displays.map(display => (
+            {displays.map((display) => (
               <MenuItem key={display.id} value={display.id}>
                 Screen {display.size.width}x{display.size.height}
               </MenuItem>
@@ -533,7 +533,6 @@ const Widgets: React.FC = observer(() => {
           Add widget to screen
         </Button>
       </Styled.Actions>
-
       <AddWidgetInstanceDialog
         open={addWidgetInstanceDialogOpen}
         onClose={closeAddWidgetInstanceDialog}

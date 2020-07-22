@@ -14,12 +14,11 @@ interface SetDevelopmentWidgetInstancePositionInputInterface {
 export const setDevelopmentWidgetInstancePosition = async ({
   id,
   position,
-}: SetDevelopmentWidgetInstancePositionInputInterface): Promise<Either<
-  string,
-  string
->> => {
+}: SetDevelopmentWidgetInstancePositionInputInterface): Promise<
+  Either<string, string>
+> => {
   const widgetInstance = store.widgetsInstances.find(
-    storeWidgetInstance => storeWidgetInstance.id === id,
+    (storeWidgetInstance) => storeWidgetInstance.id === id,
   );
 
   if (widgetInstance === undefined) {

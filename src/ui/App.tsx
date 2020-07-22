@@ -1,6 +1,7 @@
 import React from 'react';
 import { hot } from 'react-hot-loader/root';
 import { observer } from 'mobx-react-lite';
+import 'mobx-react-lite/batchingForReactDom';
 import { ThemeProvider, StylesProvider } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Layout from '@ui/views/Layout/Layout';

@@ -68,11 +68,6 @@ module.exports = {
               js: './src/ui/renderer.tsx',
               name: 'main_window',
             },
-            {
-              html: './src/widgetLoader/parcel/index.html',
-              js: './src/widgetLoader/parcel/index.ts',
-              name: 'bundler_window',
-            },
           ],
         },
       },

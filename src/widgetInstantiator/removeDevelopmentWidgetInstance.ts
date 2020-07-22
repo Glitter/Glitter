@@ -5,7 +5,7 @@ export const removeDevelopmentWidgetInstance = async (
   id: string,
 ): Promise<Either<string, string>> => {
   const widgetInstance = store.widgetsInstances.find(
-    widgetInstance => widgetInstance.id === id,
+    (widgetInstance) => widgetInstance.id === id,
   );
 
   if (widgetInstance === undefined) {
