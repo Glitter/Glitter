@@ -1,4 +1,4 @@
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import store from '@appStore/development';
 import { Either, left, right } from 'fp-ts/lib/Either';
 
@@ -12,11 +12,12 @@ export const addDevelopmentWidgetInstance = async ({
   widgetId,
   displayId,
   settings,
-}: AddDevelopmentWidgetInstanceInputInterface): Promise<Either<
-  string,
-  string
->> => {
-  const widget = store.widgets.find(storeWidget => storeWidget.id === widgetId);
+}: AddDevelopmentWidgetInstanceInputInterface): Promise<
+  Either<string, string>
+> => {
+  const widget = store.widgets.find(
+    (storeWidget) => storeWidget.id === widgetId,
+  );
 
   if (widget === undefined) {
     return left('Could not find a development widget, please try again');

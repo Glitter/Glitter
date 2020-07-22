@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { types, cast } from 'mobx-state-tree';
 import catchify from 'catchify';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import persist from '@appStore/persist';
 
 const DevelopmentWidgetSettingsField = types.model({
@@ -42,6 +42,7 @@ export const DevelopmentWidgetConfig = types.model({
   version: types.string,
   description: types.optional(types.string, ''),
   active: types.boolean,
+  port: types.maybe(types.number),
   width: types.number,
   height: types.number,
   settings: types.array(DevelopmentWidgetSettingsField),
@@ -82,7 +83,7 @@ export const Store = types
     widgets: types.array(DevelopmentWidget),
     widgetsInstances: DevelopmentWidgetsInstances,
   })
-  .actions(self => {
+  .actions((self) => {
     const addWidgetInstance = ({
       widgetId,
       displayId,
@@ -122,7 +123,7 @@ export const Store = types
     };
     const removeWidgetInstance = (id: string): void => {
       const widgetInstanceIndex = self.widgetsInstances.findIndex(
-        widgetInstance => widgetInstance.id === id,
+        (widgetInstance) => widgetInstance.id === id,
       );
 
       if (widgetInstanceIndex === -1) {
@@ -144,7 +145,7 @@ export const Store = types
       };
     }): void => {
       const widgetInstanceIndex = self.widgetsInstances.findIndex(
-        widgetInstance => widgetInstance.id === id,
+        (widgetInstance) => widgetInstance.id === id,
       );
 
       if (widgetInstanceIndex === -1) {
@@ -166,7 +167,7 @@ export const Store = types
       settings: { [key: string]: string | number };
     }): void => {
       const widgetInstanceIndex = self.widgetsInstances.findIndex(
-        widgetInstance => widgetInstance.id === id,
+        (widgetInstance) => widgetInstance.id === id,
       );
 
       if (widgetInstanceIndex === -1) {
@@ -198,7 +199,7 @@ export const Store = types
       id: string;
       config: typeof DevelopmentWidgetConfig.Type;
     }): void => {
-      const widgetIndex = self.widgets.findIndex(widget => widget.id === id);
+      const widgetIndex = self.widgets.findIndex((widget) => widget.id === id);
 
       if (widgetIndex === -1) {
         return;
@@ -207,18 +208,18 @@ export const Store = types
       self.widgets[widgetIndex].config = config;
     };
     const removeWidget = (id: string): void => {
-      const widgetIndex = self.widgets.findIndex(widget => widget.id === id);
+      const widgetIndex = self.widgets.findIndex((widget) => widget.id === id);
 
       if (widgetIndex === -1) {
         return;
       }
 
       const widgetInstancesToRemove = self.widgetsInstances.filter(
-        widgetInstance => widgetInstance.widget.id,
+        (widgetInstance) => widgetInstance.widget.id,
       );
 
       if (widgetInstancesToRemove.length > 0) {
-        widgetInstancesToRemove.forEach(widgetInstanceToRemove => {
+        widgetInstancesToRemove.forEach((widgetInstanceToRemove) => {
           removeWidgetInstance(widgetInstanceToRemove.id);
         });
       }
@@ -228,17 +229,20 @@ export const Store = types
     const toggleWidgetActive = ({
       id,
       active,
+      port,
     }: {
       id: string;
       active: boolean;
+      port?: number;
     }): void => {
-      const widgetIndex = self.widgets.findIndex(widget => widget.id === id);
+      const widgetIndex = self.widgets.findIndex((widget) => widget.id === id);
 
       if (widgetIndex === -1) {
         return;
       }
 
       self.widgets[widgetIndex].config.active = active;
+      self.widgets[widgetIndex].config.port = port;
     };
 
     return {

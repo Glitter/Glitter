@@ -31,9 +31,9 @@ jobs:
         run: 'security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k ${{ secrets.FORGE_PACKAGER_SIGNING_TEMP_KEYCHAIN_PASSWORD }} ${{ secrets.FORGE_PACKAGER_SIGNING_TEMP_KEYCHAIN_NAME }}'
       - name: Install npm dependencies
         run: npm install
-      - name: Install parcel bundler
+      - name: Install vite
         run: |
-          cd ./parcel-bundler
+          cd ./vite
           npm install
       - name: Build on MacOS and publish to GitHub releases
         env:
@@ -62,9 +62,9 @@ jobs:
         run: npm config set msvs_version 2015
       - name: Install npm dependencies
         run: npm install
-      - name: Install parcel bundler
+      - name: Install vite
         run: |
-          cd ./parcel-bundler
+          cd ./vite
           npm install
       - name: Build on Windows and publish to GitHub releases
         env:
@@ -85,9 +85,9 @@ jobs:
           sudo apt install gcc make fakeroot dpkg rpm
       - name: Install npm dependencies
         run: npm install
-      - name: Install parcel bundler
+      - name: Install vite
         run: |
-          cd ./parcel-bundler
+          cd ./vite
           npm install
       - name: Build on Ubuntu and publish to GitHub releases
         env:

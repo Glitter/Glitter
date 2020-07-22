@@ -57,7 +57,7 @@ const createVueFiles = async ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fileWrites: Promise<Either<any, any>>[] = [];
 
-  files.forEach(file => {
+  files.forEach((file) => {
     fileWrites.push(
       (async (): Promise<Either<string, string>> => {
         const pathToWriteTo = path.resolve(dir, file.name);
@@ -84,7 +84,7 @@ const createVueFiles = async ({
     return left('Something went wrong while writing the files.');
   }
 
-  const filesWrittenLeft = filesWritten.find(fileWritten =>
+  const filesWrittenLeft = filesWritten.find((fileWritten) =>
     isLeft(fileWritten),
   );
 
@@ -94,7 +94,7 @@ const createVueFiles = async ({
 
   // Looks like all files were successfully written
   return right(
-    filesWritten.map(fileWritten =>
+    filesWritten.map((fileWritten) =>
       fold(
         (x: string): string => x,
         (x: string): string => x,
@@ -152,7 +152,7 @@ const createReactFiles = async ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fileWrites: Promise<Either<any, any>>[] = [];
 
-  files.forEach(file => {
+  files.forEach((file) => {
     fileWrites.push(
       (async (): Promise<Either<string, string>> => {
         const pathToWriteTo = path.resolve(dir, file.name);
@@ -178,7 +178,7 @@ const createReactFiles = async ({
     return left('Something went wrong while writing the files.');
   }
 
-  const filesWrittenLeft = filesWritten.find(fileWritten =>
+  const filesWrittenLeft = filesWritten.find((fileWritten) =>
     isLeft(fileWritten),
   );
 
@@ -188,7 +188,7 @@ const createReactFiles = async ({
 
   // Looks like all files were successfully written
   return right(
-    filesWritten.map(fileWritten =>
+    filesWritten.map((fileWritten) =>
       fold(
         (x: string): string => x,
         (x: string): string => x,
@@ -215,10 +215,9 @@ export const createFiles = async ({
   dir,
   width,
   height,
-}: CreateFilesInputInterface): Promise<Either<
-  string,
-  { files: string[]; dir: string }
->> => {
+}: CreateFilesInputInterface): Promise<
+  Either<string, { files: string[]; dir: string }>
+> => {
   const finalDir = path.resolve(dir, title);
 
   // We create a directory if it does not already exist

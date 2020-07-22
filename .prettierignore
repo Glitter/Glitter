@@ -34,6 +34,8 @@ intermediate
 cache
 dist
 svgs-embed
+buil
+.webpack
 
 # Configuration files
 .env

@@ -19,8 +19,8 @@ rules.push({
     outputPath: 'main_window',
     postTransformPublicPath:
       process.env.npm_lifecycle_event === 'start'
-        ? p => p
-        : p => p.replace('main_window/', ''),
+        ? (p) => p
+        : (p) => p.replace('main_window/', ''),
   },
 });
 
@@ -33,12 +33,14 @@ module.exports = {
       ? plugins
       : [
           ...plugins,
-          new CopyPlugin([
-            {
-              from: path.resolve(__dirname, `./parcel-bundler/node_modules`),
-              to: `bundler_window/node_modules`,
-            },
-          ]),
+          new CopyPlugin({
+            patterns: [
+              {
+                from: path.resolve(__dirname, `./vite/node_modules`),
+                to: `node_modules`,
+              },
+            ],
+          }),
         ],
   resolve: {
     alias: {

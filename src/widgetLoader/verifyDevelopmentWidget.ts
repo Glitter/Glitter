@@ -13,7 +13,7 @@ const verifyConfigObject = (
 ): Either<string, string> => {
   const requiredKeys = ['title', 'type', 'version'];
   const missingKeys = requiredKeys.filter(
-    requiredKey => config.hasOwnProperty(requiredKey) === false,
+    (requiredKey) => config.hasOwnProperty(requiredKey) === false,
   );
 
   if (missingKeys.length) {
@@ -123,10 +123,9 @@ interface ConfigObjectInterface {
 
 export const verifyDevelopmentWidget = async ({
   dir,
-}: VerifyDevelopmentWidgetInputInterface): Promise<Either<
-  string,
-  typeof DevelopmentWidgetConfig.Type
->> => {
+}: VerifyDevelopmentWidgetInputInterface): Promise<
+  Either<string, typeof DevelopmentWidgetConfig.Type>
+> => {
   // Check if directory exists
   const [pathExistsError]: [Error, undefined] = await catchify(
     fs.pathExists(dir),

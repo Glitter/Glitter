@@ -9,12 +9,11 @@ interface SetDevelopmentWidgetInstanceSettingsInputInterface {
 export const setDevelopmentWidgetInstanceSettings = async ({
   id,
   settings,
-}: SetDevelopmentWidgetInstanceSettingsInputInterface): Promise<Either<
-  string,
-  string
->> => {
+}: SetDevelopmentWidgetInstanceSettingsInputInterface): Promise<
+  Either<string, string>
+> => {
   const widgetInstance = store.widgetsInstances.find(
-    storeWidgetInstance => storeWidgetInstance.id === id,
+    (storeWidgetInstance) => storeWidgetInstance.id === id,
   );
 
   if (widgetInstance === undefined) {

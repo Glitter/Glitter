@@ -46,7 +46,7 @@ export const AppMenuItemButton = styled(
   border: 2px solid hsl(0, 0%, 15%);
   width: ${rem(52)};
 
-  ${props =>
+  ${(props) =>
     props.active &&
     css`
       border-color: ${theme.palette.primary.light};
