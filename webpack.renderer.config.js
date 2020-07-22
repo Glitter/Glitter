@@ -2,7 +2,6 @@
 const path = require('path');
 const plugins = require('./webpack.plugins');
 const rules = require('./webpack.rules');
-const CopyPlugin = require('copy-webpack-plugin');
 
 rules.push({
   test: /\.css$/,
@@ -28,20 +27,7 @@ module.exports = {
   module: {
     rules,
   },
-  plugins:
-    process.env.npm_lifecycle_event === 'start'
-      ? plugins
-      : [
-          ...plugins,
-          new CopyPlugin({
-            patterns: [
-              {
-                from: path.resolve(__dirname, `./vite/node_modules`),
-                to: `node_modules`,
-              },
-            ],
-          }),
-        ],
+  plugins,
   resolve: {
     alias: {
       '@main': path.resolve(__dirname, './src/main'),

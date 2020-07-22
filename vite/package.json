@@ -2,7 +2,9 @@
   "name": "glitter-vite-dep",
   "description": "",
   "dependencies": {
-    "vite": "^1.0.0-rc.1",
+    "@pika/react": "^16.13.1",
+    "@pika/react-dom": "^16.13.1",
+    "vite": "^1.0.0-rc.3",
     "vite-plugin-react": "^3.0.2"
   }
 }

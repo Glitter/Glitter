@@ -1,7 +1,5 @@
-import { screen, BrowserWindow, Display, ipcMain } from 'electron';
+import { screen, BrowserWindow, Display } from 'electron';
 import { onAction } from 'mobx-state-tree';
-import path from 'path';
-import urlFormat from 'url';
 import { store, DevelopmentWidgetInstance } from '@appStore/development';
 import { getUiWindow } from '@main/uiWindow';
 
