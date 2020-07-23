@@ -85,6 +85,15 @@ const Home: React.FC = observer(() => {
               >
                 <ListItemText primary="Official community chat" />
               </ListItem>
+              <ListItem
+                button
+                component="a"
+                href="https://github.com/Glitter/Glitter/wiki"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                <ListItemText primary="Developers Documentation" />
+              </ListItem>
             </List>
           </CardContent>
         </StatsCard>
