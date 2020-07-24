@@ -1,5 +1,4 @@
 import React from 'react';
-import { hot } from 'react-hot-loader/root';
 import { observer } from 'mobx-react-lite';
 import 'mobx-react-lite/batchingForReactDom';
 import { ThemeProvider, StylesProvider } from '@material-ui/styles';
@@ -34,4 +33,4 @@ const App: React.FC<PropsInterface> = observer(({ store }) => {
   );
 });
 
-export default hot(App);
+export default App;
