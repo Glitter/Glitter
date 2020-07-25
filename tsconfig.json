@@ -22,8 +22,7 @@
       "@widgetCreator*": ["./src/widgetCreator*"],
       "@widgetLoader*": ["./src/widgetLoader*"],
       "@widgetInstantiator*": ["./src/widgetInstantiator*"],
-      "@utils*": ["./src/utils*"],
-      "react-dom": ["node_modules/@hot-loader/react-dom"]
+      "@utils*": ["./src/utils*"]
     },
     "typeRoots": ["./node_modules/@types", "./librariesTypings"],
     "noImplicitReturns": true

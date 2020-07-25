@@ -7,8 +7,6 @@ const reactPlugin = nativeRequire('vite-plugin-react');
 const customReactServeLocalPlugin = {
   configureServer: ({ app }) => {
     app.use(async (ctx, next) => {
-      console.log('Serving:', ctx.path);
-
       if (ctx.path.startsWith('/@modules/@pika/react') === false) {
         return next();
       }
@@ -21,11 +19,8 @@ const customReactServeLocalPlugin = {
       );
 
       ctx.path = file;
-
       await ctx.read(file);
-
-      console.log('Rewritten ctx path:', file);
-
+      
       return next();
     });
   },

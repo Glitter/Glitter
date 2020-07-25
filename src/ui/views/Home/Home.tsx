@@ -57,7 +57,7 @@ const Home: React.FC = observer(() => {
                 store.showDevelopers();
               }}
             >
-              Create a widget
+              Create your own widget
             </Button>
           </CardActions>
         </StatsCard>
@@ -84,6 +84,15 @@ const Home: React.FC = observer(() => {
                 rel="noreferrer noopener"
               >
                 <ListItemText primary="Official community chat" />
+              </ListItem>
+              <ListItem
+                button
+                component="a"
+                href="https://github.com/Glitter/Glitter/wiki"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                <ListItemText primary="Developers Documentation" />
               </ListItem>
             </List>
           </CardContent>

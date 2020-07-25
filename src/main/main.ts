@@ -1,7 +1,8 @@
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
-import { app, shell } from 'electron';
+import { app, shell, Menu } from 'electron';
 import { fold, isLeft } from 'fp-ts/lib/Either';
 import { api as initApi } from '@main/api';
+import { init as initMenu } from '@main/menu';
 import {
   init as initDevelopmentStore,
   store,
@@ -50,6 +51,8 @@ const instantiateUi = async (): Promise<void> => {
 
   return uiWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 };
+
+initMenu();
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

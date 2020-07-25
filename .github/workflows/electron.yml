@@ -30,7 +30,9 @@ jobs:
       - name: add codesign support
         run: 'security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k ${{ secrets.FORGE_PACKAGER_SIGNING_TEMP_KEYCHAIN_PASSWORD }} ${{ secrets.FORGE_PACKAGER_SIGNING_TEMP_KEYCHAIN_NAME }}'
       - name: Install npm dependencies
-        run: npm install
+        run: |
+          npm config set "//npm.fontawesome.com/:_authToken" ${{ secrets.FONTAWESOME_AUTH_TOKEN }}
+          npm install
       - name: Install vite
         run: |
           cd ./vite
@@ -61,7 +63,9 @@ jobs:
       - name: Set node config to set msvs_version to 2015
         run: npm config set msvs_version 2015
       - name: Install npm dependencies
-        run: npm install
+        run: |
+          npm config set "//npm.fontawesome.com/:_authToken" ${{ secrets.FONTAWESOME_AUTH_TOKEN }}
+          npm install
       - name: Install vite
         run: |
           cd ./vite
@@ -84,7 +88,9 @@ jobs:
           sudo apt update
           sudo apt install gcc make fakeroot dpkg rpm
       - name: Install npm dependencies
-        run: npm install
+        run: |
+          npm config set "//npm.fontawesome.com/:_authToken" ${{ secrets.FONTAWESOME_AUTH_TOKEN }}
+          npm install
       - name: Install vite
         run: |
           cd ./vite
