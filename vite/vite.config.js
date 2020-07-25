@@ -20,7 +20,7 @@ const customReactServeLocalPlugin = {
 
       ctx.path = file;
       await ctx.read(file);
-
+      
       return next();
     });
   },
