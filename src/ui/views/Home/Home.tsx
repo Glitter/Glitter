@@ -57,7 +57,7 @@ const Home: React.FC = observer(() => {
                 store.showDevelopers();
               }}
             >
-              Create a widget
+              Create your own widget
             </Button>
           </CardActions>
         </StatsCard>
