@@ -25,3 +25,14 @@
 
 1. ⤵️ **Download Glitter** - [https://github.com/Glitter/Glitter/releases](https://github.com/Glitter/Glitter/releases)
 2. 🌟 **Create your widget** - [https://github.com/Glitter/Glitter/wiki/Developing-widgets:-Widget-settings](https://github.com/Glitter/Glitter/wiki/Developing-widgets:-Widget-settings)
+
+---
+What if you could use the web technologies to enhance your desktop - that's Glitter. It allows you to quickly spin up new widgets, style them with HTML and CSS, and add functionality with JavaScript. They are not your regular "websites" though, you can also get access to your machine thanks to Node.js, which you can use directly from your widget.
+
+#### Sample usecases:
+
+* 🎥 **Video backgrounds** - Instead of a static, boring image, you can have a video playing as your wallpaper
+* 🔔 **Get notifications** - Made another sale through Stripe? Got another YouTube subscriber? - Get a custom alert
+* 🌡️ **Weather overview** - Do you need an umbrella, or a sun cream? Easily find out right from your desktop
+* 📈 **PC performance** - Track your CPU / RAM / HDD usage through nice looking charts instead of digging through outdated interfaces
+* ⏩ **Video/audio players** - Create a custom interface for your favourite player - Spotify, YouTube, etc.
