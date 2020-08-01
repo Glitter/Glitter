@@ -16,7 +16,7 @@ export const getUiWindow = (): Electron.BrowserWindow => {
       nodeIntegration: true,
     },
     title: 'Glitter',
-    backgroundColor: '#0f1a29',
+    backgroundColor: '#FFF9F1',
     icon: process.platform === 'linux' ? appIcon : undefined,
   });
   return uiWindow;
