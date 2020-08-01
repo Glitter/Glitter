@@ -36,7 +36,7 @@ const Home: React.FC = observer(() => {
                   You have{' '}
                   <Styled.HomeStatsNumber
                     variant="h5"
-                    color="primary"
+                    color="secondary"
                     variantMapping={{ h5: 'span' }}
                   >
                     {store.developmentWidgets.value.length}
@@ -52,10 +52,12 @@ const Home: React.FC = observer(() => {
           <CardActions>
             <Button
               size="small"
-              color="primary"
+              color="secondary"
               onClick={(): void => {
                 store.showDevelopers();
               }}
+              variant="contained"
+              disableElevation
             >
               Create your own widget
             </Button>
