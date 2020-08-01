@@ -377,6 +377,7 @@ const Developers: React.FC = observer(() => {
           color="primary"
           variant="contained"
           onClick={openAddWidgetDialog}
+          disableElevation
         >
           Add new widget
         </Button>

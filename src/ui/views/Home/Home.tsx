@@ -36,7 +36,7 @@ const Home: React.FC = observer(() => {
                   You have{' '}
                   <Styled.HomeStatsNumber
                     variant="h5"
-                    color="primary"
+                    color="secondary"
                     variantMapping={{ h5: 'span' }}
                   >
                     {store.developmentWidgets.value.length}
@@ -52,12 +52,14 @@ const Home: React.FC = observer(() => {
           <CardActions>
             <Button
               size="small"
-              color="primary"
+              color="secondary"
               onClick={(): void => {
                 store.showDevelopers();
               }}
+              variant="contained"
+              disableElevation
             >
-              Create a widget
+              Create your own widget
             </Button>
           </CardActions>
         </StatsCard>
@@ -84,6 +86,15 @@ const Home: React.FC = observer(() => {
                 rel="noreferrer noopener"
               >
                 <ListItemText primary="Official community chat" />
+              </ListItem>
+              <ListItem
+                button
+                component="a"
+                href="https://github.com/Glitter/Glitter/wiki"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                <ListItemText primary="Developers Documentation" />
               </ListItem>
             </List>
           </CardContent>

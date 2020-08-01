@@ -20,7 +20,7 @@ export const ScreenContainer = styled.section`
 `;
 
 export const Screen = styled.div`
-  background-color: ${color(theme.palette.primary.light).fade(0.8).string()};
+  background-color: #fee9c9;
   border-radius: ${rem(4)};
   max-height: 100%;
   position: relative;
@@ -46,7 +46,8 @@ export const ScreenWidgetInstanceTooltip = styled.div`
 `;
 
 export const ScreenWidgetInstanceTooltipButtons = styled.div`
-  background-color: hsla(0, 0%, 0%, 0.5);
+  background-color: ${theme.palette.primary.light};
+  border: 1px solid ${theme.palette.primary.dark};
   border-radius: ${rem(4)};
   display: grid;
   grid-gap: ${getSpacing(4)};
@@ -56,8 +57,9 @@ export const ScreenWidgetInstanceTooltipButtons = styled.div`
 export const ScreenWidgetInstanceTooltipIcon = styled(IconButton)``;
 
 export const ScreenWidgetInstance = styled.div`
+  backdrop-filter: blur(2px);
   background-color: ${color(theme.palette.primary.light).fade(0.8).string()};
-  border: 1px solid ${theme.palette.primary.main};
+  border: 1px solid ${theme.palette.primary.dark};
   border-radius: ${rem(4)};
   position: absolute;
   top: 0;

@@ -1,5 +1,6 @@
 /* eslint-disable */
 const path = require('path');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const plugins = require('./webpack.plugins');
 const rules = require('./webpack.rules');
 
@@ -27,7 +28,7 @@ module.exports = {
   module: {
     rules,
   },
-  plugins,
+  plugins: [...plugins, new ReactRefreshWebpackPlugin()],
   resolve: {
     alias: {
       '@main': path.resolve(__dirname, './src/main'),
@@ -35,7 +36,6 @@ module.exports = {
       '@appStore': path.resolve(__dirname, './src/appStore'),
       '@utils': path.resolve(__dirname, './src/utils'),
       plugins: path.resolve(__dirname, './plugins'),
-      'react-dom': '@hot-loader/react-dom',
     },
     extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
   },

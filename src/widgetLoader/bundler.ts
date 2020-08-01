@@ -82,6 +82,11 @@ export const startWidgetBundler = async ({
     stopAccessingSecurityScopedResource,
   });
 
+  getUiWindow().webContents.send('api/logs/addWidgetLog', {
+    id,
+    text: 'Bundling started',
+  });
+
   return right({
     port: bundler.address().port,
   });

@@ -168,7 +168,7 @@ const AddWidgetInstanceDialog: React.FC<AddWidgetInstanceDialogInterface> = obse
               <Styled.WidgetsGrid>
                 {store.availableWidgets.map((developmentWidget) => (
                   <Widget
-                    cardProps={{ elevation: 0 }}
+                    cardProps={{ elevation: 1 }}
                     key={developmentWidget.id}
                     title={developmentWidget.config.title}
                     subtitle={developmentWidget.config.subtitle}
