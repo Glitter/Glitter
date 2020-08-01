@@ -1,9 +1,9 @@
 <p align="center">
   <img src="https://tryglitter.com/_next/static/images/logo-7e713bd8dc1ecc9bcb8e075c58cc1d34.svg" alt="Glitter logo" width="120">
 </p>
-<p align="center"><b><i>Make your desktop your own</i></b></p>
+<p align="center"><b><i>Revive your desktop</i></b></p>
 
-<p align="center">Glitter is an app for your computer that allows you to add useful and beautiful widgets to your desktop.</p>
+<p align="center">What if you could use the web technologies to make your desktop pretty, useful, or both - that's Glitter</p>
 
 <h3 align="center"><a href="https://github.com/Glitter/Glitter/releases">Download Glitter ⤵️</a></h3>
 
@@ -27,7 +27,9 @@
 2. 🌟 **Create your widget** - [https://github.com/Glitter/Glitter/wiki/Developing-widgets:-Widget-settings](https://github.com/Glitter/Glitter/wiki/Developing-widgets:-Widget-settings)
 
 ---
-What if you could use the web technologies to enhance your desktop - that's Glitter. It allows you to quickly spin up new widgets, style them with HTML and CSS, and add functionality with JavaScript. They are not your regular "websites" though, you can also get access to your machine thanks to Node.js, which you can use directly from your widget.
+Glitter is an app for your computer that allows you to add widgets to your screen. Now, there are many apps that do this. Where Glitter is different is that it allows those widgets to be written with web technologies, which drastically lowers the barrier to entry into the desktop customization "land".
+
+You can download widgets made by other people, and you can also create your own. Glitter makes both easy - it's up to you.
 
 #### Sample usecases:
 
