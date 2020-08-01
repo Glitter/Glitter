@@ -1,4 +1,4 @@
-import { app, Menu } from 'electron';
+import { app, Menu, shell } from 'electron';
 
 export const init = (): void => {
   const isMac = process.platform === 'darwin';
@@ -85,14 +85,12 @@ export const init = (): void => {
         {
           label: 'Community Chat',
           click: async () => {
-            const { shell } = require('electron');
             await shell.openExternal('https://discord.gg/CdefJmp');
           },
         },
         {
           label: 'Developers Documentation',
           click: async () => {
-            const { shell } = require('electron');
             await shell.openExternal('https://github.com/Glitter/Glitter/wiki');
           },
         },
@@ -100,6 +98,7 @@ export const init = (): void => {
     },
   ];
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const menu = Menu.buildFromTemplate(template as any);
   Menu.setApplicationMenu(menu);
 };

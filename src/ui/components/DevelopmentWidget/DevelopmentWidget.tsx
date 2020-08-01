@@ -23,7 +23,6 @@ import { useStore } from '@ui/store/hooks';
 import { Notification } from '@ui/notifications/store';
 import { useStore as useNotificationsStore } from '@ui/notifications/hooks';
 import * as Styled from './DevelopmentWidget.css';
-import theme from '@ui/css/theme';
 
 interface DevelopmentWidgetInterface {
   path: string;
