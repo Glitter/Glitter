@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://tryglitter.com/static/branding/logo.svg" alt="Glitter logo" width="120">
+  <img src="https://tryglitter.com/_next/static/images/logo-7e713bd8dc1ecc9bcb8e075c58cc1d34.svg" alt="Glitter logo" width="120">
 </p>
 <p align="center"><b><i>Make your desktop your own</i></b></p>
 
