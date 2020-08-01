@@ -10,7 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+import Checkbox from '@material-ui/core/Checkbox';
 import * as StyledAppPaper from '@ui/components/AppPaper/AppPaper.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
@@ -23,6 +23,7 @@ import { useStore } from '@ui/store/hooks';
 import { Notification } from '@ui/notifications/store';
 import { useStore as useNotificationsStore } from '@ui/notifications/hooks';
 import * as Styled from './DevelopmentWidget.css';
+import theme from '@ui/css/theme';
 
 interface DevelopmentWidgetInterface {
   path: string;
@@ -119,6 +120,7 @@ const DevelopmentWidget: React.FC<DevelopmentWidgetInterface> = observer(
       }
 
       store.listDevelopmentWidgets({ silent: true });
+      store.listDevelopmentWidgetsInstances({ silent: true });
 
       notificationsStore.addNotification(
         Notification.create({
@@ -184,6 +186,7 @@ const DevelopmentWidget: React.FC<DevelopmentWidgetInterface> = observer(
             anchorEl={settingsMenuAnchorEl}
             open={settingsMenuOpen}
             onClose={onClose}
+            elevation={1}
           >
             <MenuItem
               onClick={(): void => {
@@ -206,7 +209,7 @@ const DevelopmentWidget: React.FC<DevelopmentWidgetInterface> = observer(
             <FormControlLabel
               label="Development active"
               control={
-                <Switch
+                <Checkbox
                   checked={active}
                   onChange={onActivityToggle}
                   value="active"

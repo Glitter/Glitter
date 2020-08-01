@@ -41,15 +41,14 @@ export const AppMenuItemButton = styled(
     <IconButton {...rest} ref={ref as RefObject<HTMLButtonElement>} />
   )),
 )`
-  background-color: hsla(0, 0%, 0%, 0.4);
   border-radius: 50%;
-  border: 2px solid hsl(0, 0%, 15%);
+  border: 2px solid ${theme.palette.secondary.dark};
   width: ${rem(52)};
 
   ${(props) =>
     props.active &&
     css`
-      border-color: ${theme.palette.primary.light};
-      color: ${theme.palette.primary.light};
+      border-color: ${theme.palette.primary.dark};
+      color: ${theme.palette.primary.dark};
     `}
 ` as any; // eslint-disable-line @typescript-eslint/no-explicit-any

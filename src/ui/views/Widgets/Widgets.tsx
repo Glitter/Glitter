@@ -408,6 +408,7 @@ const Widgets: React.FC = observer(() => {
                       <Styled.ScreenWidgetInstanceTooltip className="js-prevent-dragging">
                         <Styled.ScreenWidgetInstanceTooltipButtons>
                           <Styled.ScreenWidgetInstanceTooltipIcon
+                            color="secondary"
                             size="small"
                             onClick={(): void => {
                               setSelectedWidgetInstanceId(widgetInstance.id);
@@ -522,6 +523,7 @@ const Widgets: React.FC = observer(() => {
         <Button
           color="primary"
           variant="contained"
+          disableElevation
           onClick={openAddWidgetInstanceDialog}
           onMouseEnter={(): void => {
             setEmptyScreenKawaiiMood('excited');

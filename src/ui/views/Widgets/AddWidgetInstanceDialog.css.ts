@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { getSpacing } from '@ui/css/utilities/spacing';
-import theme from '@ui/css/theme';
 
 export const WidgetsGrid = styled.div`
   display: grid;
@@ -20,5 +19,5 @@ export const NoWidgetsInstalled = styled.div`
 `;
 
 export const ConfigureWidgetInstanceDialogTitle = styled.span`
-  color: ${theme.palette.primary.light};
+  text-decoration: underline;
 `;

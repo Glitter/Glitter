@@ -9,14 +9,13 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { getSpacing } from '@ui/css/utilities/spacing';
+import theme from '@ui/css/theme';
 
 export const DevelopmentWidget = styled.article`
   min-width: 0;
 `;
 
-export const DevelopmentWidgetCard = styled(Card)`
-  background-color: hsl(220, 40%, 27%);
-`;
+export const DevelopmentWidgetCard = styled(Card)``;
 
 interface WidgetIconInterface {
   type: 'vue' | 'react';
@@ -51,8 +50,9 @@ export const WidgetDescription = styled.div`
 `;
 
 export const Logs = styled.div`
-  background-color: hsla(0, 0%, 0%, 0.9);
+  background-color: ${theme.palette.secondary.dark};
   border-radius: ${rem(4)};
+  color: ${theme.palette.secondary.contrastText};
   font-family: monospace;
   overflow: hidden;
   padding: ${getSpacing(16)};
@@ -71,8 +71,9 @@ export const LogsFullTitle = styled(DialogTitle)`
 `;
 
 export const LogsFull = styled.div`
-  background-color: hsla(0, 0%, 0%, 0.9);
+  background-color: ${theme.palette.secondary.dark};
   border-radius: ${rem(4)};
+  color: ${theme.palette.secondary.contrastText};
   font-family: monospace;
   margin-bottom: ${getSpacing(16)};
   overflow: hidden;

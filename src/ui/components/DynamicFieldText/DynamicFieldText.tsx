@@ -50,6 +50,7 @@ const DynamicFieldText: React.FC<DynamicFieldTextInterface> = ({
   return (
     <Styled.DynamicField>
       <TextField
+        color="secondary"
         label={label}
         helperText={error ? error : description}
         name={name}

@@ -4,13 +4,15 @@ import styled, { css } from 'styled-components';
 import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
 import { getSpacing } from '@ui/css/utilities/spacing';
+import theme from '@ui/css/theme';
 
 export const Widget = styled.article`
   min-width: 0;
 `;
 
 export const WidgetCard = styled(Card)`
-  background-color: hsl(220, 40%, 27%);
+  background-color: ${theme.palette.primary.light};
+  border: 1px solid ${theme.palette.secondary.dark};
 `;
 
 interface WidgetIconInterface {

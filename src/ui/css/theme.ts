@@ -3,18 +3,22 @@ import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
 const theme = responsiveFontSizes(
   createMuiTheme({
     palette: {
-      type: 'dark',
+      type: 'light',
       primary: {
-        light: 'hsl(47, 98%, 81%)',
-        main: 'hsl(48, 97%, 73%)',
-        dark: 'hsl(45, 90%, 63%)',
-        contrastText: 'hsl(0, 0%, 0%)',
+        light: '#FFF1DD',
+        main: '#FDC777',
+        dark: '#987747',
+        contrastText: '#4C3C24',
       },
       secondary: {
-        light: 'hsl(202, 98%, 56%)',
-        main: 'hsl(204, 94%, 45%)',
-        dark: 'hsl(200, 86%, 37%)',
-        contrastText: 'hsl(0, 0%, 100%)',
+        light: '#D1CFCF',
+        main: '#473F3E',
+        dark: '#403938',
+        contrastText: '#EDECEC',
+      },
+      text: {
+        primary: '#201C1C',
+        secondary: '#2B2625',
       },
     },
     typography: {
@@ -30,6 +34,25 @@ const theme = responsiveFontSizes(
       h3: {
         fontSize: '2.75rem',
         fontWeight: 700,
+      },
+    },
+    overrides: {
+      MuiPaper: {
+        root: {
+          backgroundColor: '#FFF1DD',
+          border: '1px solid #403938',
+        },
+      },
+      MuiButton: {
+        containedPrimary: {
+          backgroundColor: '#FED8A0',
+          '&:hover': {
+            backgroundColor: '#FDC777',
+          },
+          '&:focus': {
+            backgroundColor: '#E4B36B',
+          },
+        },
       },
     },
   }),

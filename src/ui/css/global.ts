@@ -119,13 +119,9 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    background-image: linear-gradient(
-      90deg,
-      hsl(215, 46%, 11%) 0%,
-      hsl(206, 44%, 13%) 100%
-    );
-    color: hsl(0, 0%, 100%);
-    font-family: proxima-nova, sans-serif;
+    background-color: #FFF9F1;
+    color: #201C1C;
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: 1rem;
     font-style: normal;
   }
