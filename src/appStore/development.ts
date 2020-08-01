@@ -273,9 +273,9 @@ export const init = async (): Promise<typeof Store.Type> => {
           return snapshot;
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return {
           ...snapshot,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           widgets: snapshot.widgets.map((widget: any) => {
             if (widget.config.active !== undefined) {
               return widget;

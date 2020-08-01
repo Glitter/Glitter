@@ -1,5 +1,5 @@
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
-import { app, shell, Menu } from 'electron';
+import { app, shell } from 'electron';
 import { fold, isLeft } from 'fp-ts/lib/Either';
 import { api as initApi } from '@main/api';
 import { init as initMenu } from '@main/menu';
